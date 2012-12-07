@@ -13,7 +13,6 @@ uniform Scene scene;
 varying vec3 varyingEyepos;
 varying vec3 varyingNormal;
 varying vec4 vertexColor;
-varying vec4 varyingemission;
 
 void main(void)
 {
@@ -21,61 +20,20 @@ void main(void)
 	vec3 eyenorm = normalize(eyepos);
 	vec3 tnorm = normalize(varyingNormal);
 	vec4 diff = vec4(0.0);
-	vec4 emission = gl_FrontMaterial.emission+varyingemission;
-	vec4 vc=vertexColor;
-	//vec4 specular = vec4(0.0);
-	//
-	
-	
-
+	vec4 emission = gl_FrontMaterial.emission;
 
 #if (NUM_LIGHTS > 0)
-
-	float specularReflection=0.0;
-	float attenuation;
-
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 		float nDotVP = max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))));
 		diff += gl_LightSource[i].diffuse * nDotVP;
-
-
-	  /*  vec3 lightDirection = normalize(vec3(gl_LightSource[i].position));
-
-	    attenuation = max(0.0,dot(tnorm,lightDirection));
-	    
-	    if (dot(tnorm, -lightDirection) < 0.0) 
-            // light source on the wrong side?
-            {
-               specularReflection = vec3(0.0, 0.0, 0.0); 
-                  // no specular reflection
-            }
-            else // light source on the right side
-            {
-               specularReflection = pow(attenuation,32.0) * vec3(gl_LightSource[i].diffuse) * vertexColor.xyz * (pow(max(0.0, dot(reflect(-lightDirection,eyenorm), eyepos)),0.32));
-            }*/
-
-		vec3 L = normalize(gl_LightSource[i].position.xyz - eyepos); 
-		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
-		vec3 R = normalize(-reflect(L,tnorm)); 
-	    	if (vertexColor.b > 0.05 && vertexColor.r < 0.05) {
-			specularReflection += pow(max(dot(R,E),0.0),0.3*32.0)*0.75;
-		//	vc.b-=5.0;
-		}
-
-	
-
-	//	specular = gl_LightSource[i].diffuse * pow(nDotVP,32.0);
 	}
-	
 
-#ifdef TERRAIN_WITH_LAVAasd
+#ifdef TERRAIN_WITH_LAVA
 	//Glow lava terrains
 	if (vertexColor.r > 0.5000 && vertexColor.g < 0.2000 && vertexColor.b < 0.0100) {
-		emission+=1.25*vertexColor;//*(clamp(0.5-diff.r,0.0,1.0));
+		emission+=0.5*vertexColor;//*(clamp(0.5-diff.r,0.0,1.0));
 	}
 #endif
-
-
 
 #ifdef ATMOSPHERE
 	// when does the eye ray intersect atmosphere
@@ -89,7 +47,7 @@ void main(void)
 		vec3 a = (atmosStart * eyenorm - geosphereCenter) / geosphereScaledRadius;
 		vec3 b = (eyepos - geosphereCenter) / geosphereScaledRadius;
 		ldprod = AtmosLengthDensityProduct(a, b, atmosColor.w*geosphereAtmosFogDensity, atmosDist, geosphereAtmosInvScaleHeight);
-		fogFactor = clamp(1.75 / exp(ldprod),0.0,1.0);
+		fogFactor = 1.0 / exp(ldprod);
 	}
 
 	vec4 atmosDiffuse = vec4(0.0);
@@ -104,9 +62,9 @@ void main(void)
 	gl_FragColor =
 		emission +
 		fogFactor *
-		((scene.ambient * vc) +
-		(diff * vc)) +
-		(1.0-fogFactor)*(atmosDiffuse*atmosColor)+diff*specularReflection+pow((1.0-fogFactor),32.0)*0.25*diff;//	+specular;
+		((scene.ambient * vertexColor) +
+		(diff * vertexColor)) +
+		(1.0-fogFactor)*(atmosDiffuse*atmosColor);
 #else // atmosphere-less planetoids and dim stars
 	gl_FragColor =
 		emission +

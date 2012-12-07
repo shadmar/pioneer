@@ -9,6 +9,7 @@ uniform float geosphereAtmosFogDensity;
 uniform float geosphereAtmosInvScaleHeight;
 
 varying vec4 varyingEyepos;
+varying vec3 varyingNormal;
 
 void sphereEntryExitDist(out float near, out float far, in vec3 sphereCenter, in vec3 eyeTo, in float radius)
 {
@@ -31,6 +32,12 @@ void sphereEntryExitDist(out float near, out float far, in vec3 sphereCenter, in
 
 void main(void)
 {
+
+
+
+float specularReflection=0.0;
+
+
 	float skyNear, skyFar;
 	vec3 eyepos = vec3(varyingEyepos);
 	vec3 eyenorm = normalize(eyepos);
@@ -49,12 +56,19 @@ void main(void)
 	{
 		vec3 surfaceNorm = normalize(skyNear * eyenorm - geosphereCenter);
 		for (int i=0; i<NUM_LIGHTS; ++i) {
+
+			
+		
+		vec3 L = normalize(gl_LightSource[i].position.xyz - eyepos); 
+		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
+		vec3 R = normalize(-reflect(L,varyingNormal)); 
+		specularReflection += pow(max(dot(R,E),0.0),0.3*16.0)*1.0;
+
 			atmosDiffuse += gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
 		}
 	}
 	atmosDiffuse.a = 1.0;
-	gl_FragColor = (1.0-fogFactor) * (atmosDiffuse*
-		vec4(atmosColor.rgb, 1.0));
+	gl_FragColor = (1.0-fogFactor) * (atmosDiffuse*vec4(atmosColor.rgb, 1.0)+atmosColor*specularReflection);//+atmosColor*pow((1.0-fogFactor),1.0)*0.5*atmosDiffuse;
 
 	SetFragDepth();
 }

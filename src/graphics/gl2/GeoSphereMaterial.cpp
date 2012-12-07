@@ -49,7 +49,7 @@ void GeoSphereSurfaceMaterial::Apply()
 	//XXX replace with actual material parameter
 	glMaterialfv (GL_FRONT, GL_EMISSION, &emissive[0]);
 
-	SetGSUniforms();
+			SetGSUniforms();
 }
 
 void GeoSphereSurfaceMaterial::SetGSUniforms()
