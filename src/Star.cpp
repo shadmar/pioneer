@@ -25,7 +25,7 @@ double Star::GetClipRadius() const
 
 	// if star is wolf-rayet it gets a very large halo effect
 	const float wf = (sbody->type < SystemBody::TYPE_STAR_S_BH && sbody->type > SystemBody::TYPE_STAR_O_HYPER_GIANT) ? 100.0f : 1.0f;
-	return sbody->GetRadius() * 72 * wf;
+	return sbody->GetRadius() * 8 * wf;
 }
 
 void Star::Render(Graphics::Renderer *renderer, const Camera *camera, const vector3d &viewCoords, const matrix4x4d &viewTransform)
@@ -69,12 +69,12 @@ void Star::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 	const Color bright(col[0], col[1], col[2], 1.f);
 	const Color dark(0.0f, 0.0f, 0.0f, 0.f);
 
-	va.Add(vector3f(0.f), bright*0.7);  
-	vb.Add(vector3f(0.f,0.f,0.01f), bright*0.5);
-	vc.Add(vector3f(0.f,0.f,0.015f), bright*0.25);
+	va.Add(vector3f(0.f), bright*0.75);  
+	vb.Add(vector3f(0.f,0.f,0.01f), bright*0.45);
+	vc.Add(vector3f(0.f,0.f,0.015f), bright*0.35);
 
 	float ang=0;
-	const float size=4;
+	const float size=32;
 	for (ang=0; ang<2*M_PI; ang+=0.25) {//+rand.Double(0,0.04)) {
 		
 		float xf = rad*sin(ang);
@@ -82,7 +82,7 @@ void Star::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 
 		va.Add(vector3f(xf, yf, 0), dark);
 		vb.Add(vector3f(xf*size, yf*size, 0.01f), dark);
-		vc.Add(vector3f(xf*size*4, yf, 0.015f), dark);
+		vc.Add(vector3f(xf*size, yf, 0.015f), dark);
 	}
 	float lf = rad*cos(2*M_PI-ang);
 	va.Add(vector3f(0.f, lf, 0.f), dark);

@@ -21,6 +21,7 @@ void main(void)
 	vec3 eyenorm = normalize(eyepos);
 	vec3 tnorm = normalize(varyingNormal);
 	vec4 diff = vec4(0.0);
+	vec4 rdiff = vec4(0.0);
 	vec4 emission = gl_FrontMaterial.emission+varyingemission;
 	vec4 vc=vertexColor;
 	//vec4 specular = vec4(0.0);
@@ -36,7 +37,16 @@ void main(void)
 
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 		float nDotVP = max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))));
-		diff += gl_LightSource[i].diffuse * nDotVP;
+		float nnDotVP = max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position))));
+		//diff+=gl_LightSource[i].diffuse * (nDotVP);
+		diff += gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+
+		//	diff +=  2.0 * gl_LightSource[i].diffuse - min(			
+		//		      max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))))		//darken backside
+		 //	              + dot(tnorm, normalize(-vec3(gl_LightSource[i].position))) 			//
+		//		      + max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position)))),0.75);
+			//diff *= 1.0/float(NUM_LIGHTS);
+		  	
 
 
 	  /*  vec3 lightDirection = normalize(vec3(gl_LightSource[i].position));
@@ -58,7 +68,7 @@ void main(void)
 		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
 		vec3 R = normalize(-reflect(L,tnorm)); 
 	    	if (vertexColor.b > 0.05 && vertexColor.r < 0.05) {
-			specularReflection += pow(max(dot(R,E),0.0),0.3*32.0)*0.75;
+			specularReflection += pow(max(dot(R,E),0.0),0.3*32.0)*0.25*(1.0/float(NUM_LIGHTS));
 		//	vc.b-=5.0;
 		}
 
@@ -89,14 +99,19 @@ void main(void)
 		vec3 a = (atmosStart * eyenorm - geosphereCenter) / geosphereScaledRadius;
 		vec3 b = (eyepos - geosphereCenter) / geosphereScaledRadius;
 		ldprod = AtmosLengthDensityProduct(a, b, atmosColor.w*geosphereAtmosFogDensity, atmosDist, geosphereAtmosInvScaleHeight);
-		fogFactor = clamp(1.75 / exp(ldprod),0.0,1.0);
+		fogFactor = clamp(1.5 / exp(ldprod),0.0,1.0);
 	}
 
 	vec4 atmosDiffuse = vec4(0.0);
 	{
 		vec3 surfaceNorm = normalize(atmosStart*eyenorm - geosphereCenter);
 		for (int i=0; i<NUM_LIGHTS; ++i) {
-			atmosDiffuse += gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+
+			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
+		
+			atmosDiffuse += 0.5*gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+			//atmosDiffuse = vec4(0);
 		}
 	}
 	atmosDiffuse.a = 1.0;
@@ -104,13 +119,15 @@ void main(void)
 	gl_FragColor =
 		emission +
 		fogFactor *
-		((scene.ambient * vc) +
+		((0.0*scene.ambient * vc) +
 		(diff * vc)) +
-		(1.0-fogFactor)*(atmosDiffuse*atmosColor)+diff*specularReflection+pow((1.0-fogFactor),32.0)*0.25*diff;//	+specular;
+		(1.0-fogFactor)*(atmosDiffuse*atmosColor)
+			+pow((1.0-fogFactor),512.0)*atmosColor*0.5*diff
+				+diff*specularReflection;
 #else // atmosphere-less planetoids and dim stars
 	gl_FragColor =
 		emission +
-		(scene.ambient * vertexColor) +
+		(0.0*scene.ambient * vertexColor) +
 		(diff * vertexColor);
 #endif //ATMOSPHERE
 

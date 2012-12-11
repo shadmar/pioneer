@@ -31,7 +31,7 @@ void main(void)
 #endif
 
 	gl_FragColor =
-		(scene.ambient * gl_FrontMaterial.ambient) +
+		(0.0*scene.ambient * gl_FrontMaterial.ambient) +
 		(amb * gl_FrontMaterial.ambient) +
 		(diff * gl_FrontMaterial.diffuse) +
 		(spec * gl_FrontMaterial.specular) +

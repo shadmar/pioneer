@@ -755,6 +755,18 @@ void Ship::TimeStepUpdate(const float timeStep)
 
 	DynamicBody::TimeStepUpdate(timeStep);
 
+	double speed = GetVelocity().Length();
+	Body *astro = GetFrame()->m_astroBody;
+		if (astro && astro->IsType(Object::PLANET)) {
+			Planet *p = static_cast<Planet*>(astro);
+			double pressure, density;
+			double dist = GetPosition().Length();
+			p->GetAtmosphericState(dist, &pressure, &density);
+				if ( density > 0.0 ) {
+					Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, std::min(speed*density*GetThrusterState().Length(),50.0));
+				}
+		}
+	
 	// fuel use decreases mass, so do this as the last thing in the frame
 	UpdateFuel(timeStep);
 }

@@ -48,7 +48,7 @@ float specularReflection=0.0;
 		vec3 dir = eyenorm;
 		// a&b scaled so length of 1.0 means planet surface.
 		vec3 a = (skyNear * dir - geosphereCenter) / geosphereScaledRadius;
-		vec3 b = (skyFar * dir - geosphereCenter) / geosphereScaledRadius;
+		vec3 b = (skyFar*2.0 * dir - geosphereCenter) / geosphereScaledRadius;
 		ldprod = AtmosLengthDensityProduct(a, b, atmosColor.a * geosphereAtmosFogDensity, atmosDist, geosphereAtmosInvScaleHeight);
 	}
 	float fogFactor = 1.0 / exp(ldprod);
@@ -62,13 +62,18 @@ float specularReflection=0.0;
 		vec3 L = normalize(gl_LightSource[i].position.xyz - eyepos); 
 		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
 		vec3 R = normalize(-reflect(L,varyingNormal)); 
-		specularReflection += pow(max(dot(R,E),0.0),0.3*16.0)*1.0;
+		specularReflection += pow(max(dot(R,E),0.0),0.3*32.0)*(1.0/float(NUM_LIGHTS));
 
-			atmosDiffuse += gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
+		
+			atmosDiffuse +=   0.70*gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
 		}
 	}
 	atmosDiffuse.a = 1.0;
-	gl_FragColor = (1.0-fogFactor) * (atmosDiffuse*vec4(atmosColor.rgb, 1.0)+atmosColor*specularReflection);//+atmosColor*pow((1.0-fogFactor),1.0)*0.5*atmosDiffuse;
+	gl_FragColor = (1.0-fogFactor) * (atmosDiffuse*vec4(atmosColor.rgb, 1.0))
+			+atmosColor*pow((1.0-fogFactor),1.0)*0.5*atmosDiffuse
+			+atmosColor*specularReflection*(1.0-fogFactor);
 
 	SetFragDepth();
 }
