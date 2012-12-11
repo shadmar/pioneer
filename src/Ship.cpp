@@ -532,16 +532,16 @@ Ship::HyperjumpStatus Ship::GetHyperspaceDetails(const SystemPath &dest, int &ou
 	double m_totalmass = GetMass()/1000;
 	if (dist > m_stats.hyperspace_range_max) {
 		outFuelRequired = 0;
-		return HYPERJUMP_OUT_OF_RANGE;
+		return HYPERJUMP_OK;//HYPERJUMP_OUT_OF_RANGE;
 	} else if (fuel < outFuelRequired) {
-		return HYPERJUMP_INSUFFICIENT_FUEL;
+		return HYPERJUMP_OK;//HYPERJUMP_INSUFFICIENT_FUEL;
 	} else {
 		outDurationSecs = Pi::CalcHyperspaceDuration(hyperclass, m_totalmass, dist);
 
 		if (outFuelRequired <= fuel) {
 			return HYPERJUMP_OK;
 		} else {
-			return HYPERJUMP_INSUFFICIENT_FUEL;
+			return HYPERJUMP_OK;//HYPERJUMP_INSUFFICIENT_FUEL;
 		}
 	}
 }
@@ -755,6 +755,18 @@ void Ship::TimeStepUpdate(const float timeStep)
 
 	DynamicBody::TimeStepUpdate(timeStep);
 
+	double speed = GetVelocity().Length();
+	Body *astro = GetFrame()->m_astroBody;
+		if (astro && astro->IsType(Object::PLANET)) {
+			Planet *p = static_cast<Planet*>(astro);
+			double pressure, density;
+			double dist = GetPosition().Length();
+			p->GetAtmosphericState(dist, &pressure, &density);
+				if ( density > 0.0 ) {
+					Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, std::min(speed*density*GetThrusterState().Length(),50.0));
+				}
+		}
+	
 	// fuel use decreases mass, so do this as the last thing in the frame
 	UpdateFuel(timeStep);
 }
@@ -1054,7 +1066,7 @@ void Ship::StaticUpdate(const float timeStep)
 
 	// lasers
 	for (int i=0; i<ShipType::GUNMOUNT_MAX; i++) {
-		m_gunRecharge[i] -= timeStep;
+		m_gunRecharge[i] -= timeStep*2.0;
 		float rateCooling = 0.01f;
 		if (m_equipment.Get(Equip::SLOT_LASERCOOLER) != Equip::NONE)  {
 			rateCooling *= float(Equip::types[ m_equipment.Get(Equip::SLOT_LASERCOOLER) ].pval);

@@ -268,9 +268,9 @@ void Projectile::Render(Graphics::Renderer *renderer, const Camera *camera, cons
 
 	// increase visible size based on distance from camera, z is always negative
 	// allows them to be smaller while maintaining visibility for game play
-	const float dist_scale = float(viewCoords.z / -500);
-	const float length = Equip::lasers[m_type].length + dist_scale;
-	const float width = Equip::lasers[m_type].width + dist_scale;
+	const float dist_scale = float(viewCoords.z / -100);
+	const float length = Equip::lasers[m_type].length*3.0 + dist_scale;
+	const float width = Equip::lasers[m_type].width*3.0 + dist_scale;
 	glScalef(width, width, length);
 
 	Color color = Equip::lasers[m_type].color;

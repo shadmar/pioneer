@@ -1124,7 +1124,7 @@ void SystemBody::PickAtmosphere()
 	 */
 	switch (type) {
 		case SystemBody::TYPE_PLANET_GAS_GIANT:
-			m_atmosColor = Color(1.0f, 1.0f, 1.0f, 0.0005f);
+			m_atmosColor = Color(0.3f, 0.25f, 0.2f, 0.01f);
 			m_atmosDensity = 14.0;
 			break;
 		case SystemBody::TYPE_PLANET_ASTEROID:
@@ -1298,7 +1298,9 @@ SystemBody::AtmosphereParameters SystemBody::CalcAtmosphereParams() const
 	// XXX just use earth's composition for now
 	const double M = 0.02897f; // in kg/mol
 
-	const float atmosScaleHeight = static_cast<float>(GAS_CONSTANT_R*T/(M*g));
+	float atmosScaleHeight = static_cast<float>(GAS_CONSTANT_R*T/(M*g));
+
+	if (type==SystemBody::TYPE_PLANET_GAS_GIANT) atmosScaleHeight *= 10.0f;
 
 	// min of 2.0 corresponds to a scale height of 1/20 of the planet's radius,
 	params.atmosInvScaleHeight = std::max(20.0f, static_cast<float>(GetRadius() / atmosScaleHeight));
