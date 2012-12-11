@@ -728,6 +728,7 @@ AICmdFlyTo::AICmdFlyTo(Ship *ship, Body *target, float hungriness) : AICommand (
 {
 	double dist = std::max(VICINITY_MIN, VICINITY_MUL*MaxEffectRad(target, ship));
 	if (target->IsType(Object::SPACESTATION) && static_cast<SpaceStation *>(target)->IsGroundStation()) {
+		dist = std::max(VICINITY_MIN, 0.05*VICINITY_MUL*MaxEffectRad(target, ship));
 		matrix4x4d rot; target->GetRotMatrix(rot);
 		m_posoff = target->GetPosition() + dist * vector3d(rot[4], rot[5], rot[6]);		// up vector for starport
 		m_targframe = target->GetFrame();
