@@ -548,6 +548,10 @@ void Pi::HandleEvents()
 						case SDLK_PRINT:	   // print
 						case SDLK_KP_MULTIPLY: // screen
 						{
+							
+							//Pi::Message((Pi::game->GetSpace()->GetStarSystem()->GetName()));
+							//Pi::Message((std::string)(Pi::sectorView->GetPosition().x));
+							//Pi::Message(stringf("kkk:", formatarg("item", Pi::sectorView->GetPosition().x)));
 							char buf[256];
 							const time_t t = time(0);
 							struct tm *_tm = localtime(&t);

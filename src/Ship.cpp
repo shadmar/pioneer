@@ -1006,6 +1006,25 @@ void Ship::StaticUpdate(const float timeStep)
 
 	UpdateAlertState();
 
+	
+	/* WATER SCOOPING!!!!!!!!! */
+	if (m_flightState == LANDED) { //&& (m_equipment.Get(Equip::SLOT_PUMPS) != Equip::NONE)) { 
+	  if (3600.0*Pi::rng.Double() < timeStep) {
+	    Body *astro = GetFrame()->m_astroBody;
+		if (astro && astro->IsType(Object::PLANET)) {
+			Planet *p = static_cast<Planet*>(astro);
+			if (p->GetSystemBody()->IsHydroScoopable() && m_stats.free_capacity) {
+						m_equipment.Add(Equip::WATER);
+						UpdateEquipStats();
+						if (this->IsType(Object::PLAYER)) {
+							Pi::Message(stringf("WATER COLLECTED",
+									formatarg("quantity", m_equipment.Count(Equip::SLOT_CARGO, Equip::WATER))));
+						}
+			}
+		}
+	  }
+	}
+
 	/* FUEL SCOOPING!!!!!!!!! */
 	if ((m_flightState == FLYING) && (m_equipment.Get(Equip::SLOT_FUELSCOOP) != Equip::NONE)) {
 		Body *astro = GetFrame()->m_astroBody;

@@ -1110,7 +1110,15 @@ bool SystemBody::HasAtmosphere() const
 
 bool SystemBody::IsScoopable() const
 {
+
 	return (GetSuperType() == SUPERTYPE_GAS_GIANT);
+}
+
+bool SystemBody::IsHydroScoopable() const
+{
+	if (m_volatileIces + m_volatileLiquid > fixed(4,5)) 
+	return true;
+	return false;
 }
 
 void SystemBody::PickAtmosphere()
