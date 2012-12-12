@@ -124,7 +124,7 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 		}
 		case TYPE_DAMAGE: {
 			vector3f pos(&fpos.x);
-			damageParticle->diffuse = Color(0.25f, 0.25f, 0.25f, 0.35f-(m_age/4.0f));
+			damageParticle->diffuse = Color(0.5f, 0.25f, 0.25f, 0.35f-(m_age/4.0f));
 			renderer->DrawPointSprites(1, &pos, damageParticle, 70.f);
 			break;
 		}
@@ -132,13 +132,13 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 			vector3f pos(&fpos.x);	
 
 			if (m_age < 1.0)
-				smokeParticle->diffuse = Color(0.25, 0.25f, 0.3f, m_age-(m_age/4.0f));
+				smokeParticle->diffuse = Color(0.25, 0.25f, 0.3f, m_age-(m_age/2.0f));
 			else
-				smokeParticle->diffuse = Color(0.3, 0.25f, 0.25f, 1.0-(m_age/4.0f));
+				smokeParticle->diffuse = Color(0.3, 0.25f, 0.25f, 1.0-(m_age));
 
-			damageParticle->diffuse*=0.3;
-			renderer->SetBlendMode(Graphics::BLEND_ALPHA_ONE);
-			renderer->DrawPointSprites(1, &pos, smokeParticle, (m_speed)/2.0);
+			damageParticle->diffuse*=0.05;
+			//renderer->SetBlendMode(Graphics::BLEND_ALPHA_ONE);
+			renderer->DrawPointSprites(1, &pos, smokeParticle, (m_speed));
 			break;
 		}
 	}
@@ -165,16 +165,14 @@ void Sfx::Add(const Body *b, TYPE t)
 
 	sfx->m_type = t;
 	sfx->m_age = 0;
-	//vector3d npos = b->GetPosition();
-	//npos.y += 50.0;
 	sfx->SetPosition(b->GetPosition());
-	//sfx->m_vel = b->GetVelocity() ;//+ 200.0*vector3d(
-			//Pi::rng.Double()-0.5,
-			//Pi::rng.Double()-0.5,
-			//Pi::rng.Double()-0.5);
+	sfx->m_vel = b->GetVelocity() + 200.0*vector3d(
+			Pi::rng.Double()-0.5,
+			Pi::rng.Double()-0.5,
+			Pi::rng.Double()-0.5);
 }
 
-void Sfx::AddThrustSmoke(const Body *b, TYPE t, float speed)
+void Sfx::AddThrustSmoke(const Body *b, TYPE t, float speed, vector3d adjustpos)
 {
 	Sfx *sfx = AllocSfxInFrame(b->GetFrame());
 	if (!sfx) return;
@@ -183,7 +181,8 @@ void Sfx::AddThrustSmoke(const Body *b, TYPE t, float speed)
 	sfx->m_age = 0;
 	sfx->m_speed = speed;
 	vector3d npos = b->GetPosition();
-	sfx->SetPosition(npos);
+	sfx->SetPosition(npos+adjustpos);
+	sfx->m_vel = vector3d(0,0,0);
 	/*sfx->m_vel = b->GetVelocity()+50.0*vector3d(
 			Pi::rng.Double()-0.5	,
 			Pi::rng.Double()-0.5,
@@ -247,6 +246,6 @@ void Sfx::Uninit()
 	delete shieldEffect; shieldEffect = 0;
 	delete explosionEffect; explosionEffect = 0;
 	delete damageParticle; damageParticle = 0;
-	delete smokeParticle; damageParticle = 0;
+	delete smokeParticle; smokeParticle = 0;
 	delete ecmParticle; ecmParticle = 0;
 }

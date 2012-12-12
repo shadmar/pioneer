@@ -21,7 +21,7 @@ public:
 	enum TYPE { TYPE_NONE, TYPE_EXPLOSION, TYPE_DAMAGE, TYPE_SMOKE };
 
 	static void Add(const Body *, TYPE);
-	static void AddThrustSmoke(const Body *b, TYPE, float speed);
+	static void AddThrustSmoke(const Body *b, TYPE, float speed, vector3d adjustpos);
 	static void TimeStepAll(const float timeStep, Frame *f);
 	static void RenderAll(Graphics::Renderer *r, const Frame *f, const Frame *camFrame);
 	static void Serialize(Serializer::Writer &wr, const Frame *f);

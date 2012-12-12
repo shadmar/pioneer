@@ -25,14 +25,14 @@ void main(void)
 	}
 
 #ifdef GLOWMAP
-	vec4 emission = texture2D(texture1, texCoord);
+	vec4 emission = texture2D(texture1, texCoord)*2.0;
 #else
 	vec4 emission = gl_FrontMaterial.emission;
 #endif
 
 	gl_FragColor =
-		(0.0*scene.ambient * gl_FrontMaterial.ambient) +
-		(amb * gl_FrontMaterial.ambient) +
+		(0.25*scene.ambient * gl_FrontMaterial.ambient) +
+		(0.25*amb * gl_FrontMaterial.ambient) +
 		(diff * gl_FrontMaterial.diffuse) +
 		(spec * gl_FrontMaterial.specular) +
 		emission;

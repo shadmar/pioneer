@@ -763,7 +763,12 @@ void Ship::TimeStepUpdate(const float timeStep)
 			double dist = GetPosition().Length();
 			p->GetAtmosphericState(dist, &pressure, &density);
 				if ( density > 0.0 ) {
-					Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, std::min(speed*density*GetThrusterState().Length(),50.0));
+				    matrix4x4d rot;
+				    GetRotMatrix(rot);
+					const vector3d &tstate = GetThrusterState();
+				    vector3d pos = rot * vector3d(0, 0 , 100.0*fabs(tstate.z));
+					if (fabs(tstate.z) > 0)
+					Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, std::min(speed*density*fabs(tstate.z),60.0),pos);
 				}
 		}
 	
