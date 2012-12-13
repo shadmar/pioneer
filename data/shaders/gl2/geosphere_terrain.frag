@@ -68,7 +68,7 @@ void main(void)
 		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
 		vec3 R = normalize(-reflect(L,tnorm)); 
 	    	if (vertexColor.b > 0.05 && vertexColor.r < 0.05) {
-			specularReflection += pow(max(dot(R,E),0.0),0.3*32.0)*0.25*(1.0/float(NUM_LIGHTS));
+			specularReflection += pow(max(dot(R,E),0.0),0.3*64.0)*0.25*(1.0/float(NUM_LIGHTS));
 		//	vc.b-=5.0;
 		}
 
@@ -99,7 +99,7 @@ void main(void)
 		vec3 a = (atmosStart * eyenorm - geosphereCenter) / geosphereScaledRadius;
 		vec3 b = (eyepos - geosphereCenter) / geosphereScaledRadius;
 		ldprod = AtmosLengthDensityProduct(a, b, atmosColor.w*geosphereAtmosFogDensity, atmosDist, geosphereAtmosInvScaleHeight);
-		fogFactor = clamp(1.5 / exp(ldprod),0.0,1.0);
+		fogFactor = clamp( 1.5 / exp(ldprod),0.0,1.0);
 	}
 
 	vec4 atmosDiffuse = vec4(0.0);
@@ -122,7 +122,7 @@ void main(void)
 		((0.25*scene.ambient * vc) +
 		(diff * vc)) +
 		(1.0-fogFactor)*(atmosDiffuse*atmosColor)
-			+pow((1.0-fogFactor),512.0)*atmosColor*0.5*diff
+			+(pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)
 				+diff*specularReflection;
 #else // atmosphere-less planetoids and dim stars
 	gl_FragColor =
