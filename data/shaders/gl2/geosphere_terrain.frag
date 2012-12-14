@@ -24,10 +24,6 @@ void main(void)
 	vec4 rdiff = vec4(0.0);
 	vec4 emission = gl_FrontMaterial.emission+varyingemission;
 	vec4 vc=vertexColor;
-	//vec4 specular = vec4(0.0);
-	//
-	
-	
 
 
 #if (NUM_LIGHTS > 0)
@@ -38,54 +34,16 @@ void main(void)
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 		float nDotVP = max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))));
 		float nnDotVP = max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position))));
-		//diff+=gl_LightSource[i].diffuse * (nDotVP);
 		diff += gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
-
-		//	diff +=  2.0 * gl_LightSource[i].diffuse - min(			
-		//		      max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))))		//darken backside
-		 //	              + dot(tnorm, normalize(-vec3(gl_LightSource[i].position))) 			//
-		//		      + max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position)))),0.75);
-			//diff *= 1.0/float(NUM_LIGHTS);
-		  	
-
-
-	  /*  vec3 lightDirection = normalize(vec3(gl_LightSource[i].position));
-
-	    attenuation = max(0.0,dot(tnorm,lightDirection));
-	    
-	    if (dot(tnorm, -lightDirection) < 0.0) 
-            // light source on the wrong side?
-            {
-               specularReflection = vec3(0.0, 0.0, 0.0); 
-                  // no specular reflection
-            }
-            else // light source on the right side
-            {
-               specularReflection = pow(attenuation,32.0) * vec3(gl_LightSource[i].diffuse) * vertexColor.xyz * (pow(max(0.0, dot(reflect(-lightDirection,eyenorm), eyepos)),0.32));
-            }*/
 
 		vec3 L = normalize(gl_LightSource[i].position.xyz - eyepos); 
 		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
 		vec3 R = normalize(-reflect(L,tnorm)); 
 	    	if (vertexColor.b > 0.05 && vertexColor.r < 0.05) {
 			specularReflection += pow(max(dot(R,E),0.0),0.3*64.0)*0.25*(1.0/float(NUM_LIGHTS));
-		//	vc.b-=5.0;
 		}
-
-	
-
-	//	specular = gl_LightSource[i].diffuse * pow(nDotVP,32.0);
 	}
 	
-
-#ifdef TERRAIN_WITH_LAVAasd
-	//Glow lava terrains
-	if (vertexColor.r > 0.5000 && vertexColor.g < 0.2000 && vertexColor.b < 0.0100) {
-		emission+=1.25*vertexColor;//*(clamp(0.5-diff.r,0.0,1.0));
-	}
-#endif
-
-
 
 #ifdef ATMOSPHERE
 	// when does the eye ray intersect atmosphere
@@ -109,9 +67,7 @@ void main(void)
 
 			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
 			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
-		
 			atmosDiffuse += 0.5*gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
-			//atmosDiffuse = vec4(0);
 		}
 	}
 	atmosDiffuse.a = 1.0;

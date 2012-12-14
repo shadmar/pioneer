@@ -532,16 +532,16 @@ Ship::HyperjumpStatus Ship::GetHyperspaceDetails(const SystemPath &dest, int &ou
 	double m_totalmass = GetMass()/1000;
 	if (dist > m_stats.hyperspace_range_max) {
 		outFuelRequired = 0;
-		return HYPERJUMP_OK;//HYPERJUMP_OUT_OF_RANGE;
+		return HYPERJUMP_OUT_OF_RANGE;
 	} else if (fuel < outFuelRequired) {
-		return HYPERJUMP_OK;//HYPERJUMP_INSUFFICIENT_FUEL;
+		return HYPERJUMP_INSUFFICIENT_FUEL;
 	} else {
 		outDurationSecs = Pi::CalcHyperspaceDuration(hyperclass, m_totalmass, dist);
 
 		if (outFuelRequired <= fuel) {
 			return HYPERJUMP_OK;
 		} else {
-			return HYPERJUMP_OK;//HYPERJUMP_INSUFFICIENT_FUEL;
+			return HYPERJUMP_INSUFFICIENT_FUEL;
 		}
 	}
 }
