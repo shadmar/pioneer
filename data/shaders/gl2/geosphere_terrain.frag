@@ -61,24 +61,28 @@ void main(void)
 	}
 
 	vec4 atmosDiffuse = vec4(0.0);
+	vec4 ssDiffuse = vec4(0.0);
 	{
 		vec3 surfaceNorm = normalize(atmosStart*eyenorm - geosphereCenter);
 		for (int i=0; i<NUM_LIGHTS; ++i) {
 
 			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
 			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
-			atmosDiffuse += 0.5*gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+			atmosDiffuse += 0.55*gl_LightSource[i].diffuse * (nDotVP+0.5*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+			ssDiffuse += gl_LightSource[i].diffuse * nDotVP;
 		}
 	}
 	atmosDiffuse.a = 1.0;
+
+	vec4 sunset = vec4(0.9,min(pow(atmosDiffuse.g,0.75),1.0)+0.1,min(pow(atmosDiffuse.b,0.75),1.0),1.0);
 
 	gl_FragColor =
 		emission +
 		fogFactor *
 		((0.25*scene.ambient * vc) +
-		(diff * vc)) +
-		(1.0-fogFactor)*(atmosDiffuse*atmosColor)
-			+(pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)
+		(diff * vc )) + //* clamp(fogFactor*18.0,0.0,1.0) + (diff * vc * (1.0-clamp(fogFactor*18.0,0.0,1.0)) * 4.0 * sunset))) +
+		(1.0-fogFactor)*(atmosDiffuse*atmosColor)					*sunset
+			+(pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)		*sunset	
 				+diff*specularReflection;
 #else // atmosphere-less planetoids and dim stars
 	gl_FragColor =

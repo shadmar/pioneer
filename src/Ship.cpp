@@ -279,7 +279,7 @@ bool Ship::OnDamage(Object *attacker, float kgDamage)
 			}
 		}
 
-		m_stats.hull_mass_left -= dam;
+		m_stats.hull_mass_left -= dam*0.0;
 		if (m_stats.hull_mass_left < 0) {
 			if (attacker) {
 				if (attacker->IsType(Object::BODY)) {

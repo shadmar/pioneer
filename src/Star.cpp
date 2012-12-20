@@ -69,7 +69,7 @@ void Star::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 	const Color bright(col[0], col[1], col[2], 1.f);
 	const Color dark(0.0f, 0.0f, 0.0f, 0.f);
 
-	va.Add(vector3f(0.f), bright*0.75);  
+	va.Add(vector3f(0.f), bright*1.0);  
 	vb.Add(vector3f(0.f,0.f,0.01f), bright*0.35);
 	vc.Add(vector3f(0.f,0.f,0.015f), bright*0.25);
 

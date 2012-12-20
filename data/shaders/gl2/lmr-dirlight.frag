@@ -24,6 +24,8 @@ void main(void)
 		spec += gl_LightSource[i].specular * pf;
 	}
 
+//vec4 sunset = vec4(1.0,min(pow(ssDiffuse.g,0.5),1.0)+0.25,min(pow(ssDiffuse.b,0.5),1.0)+0.25,1.0);
+
 #ifdef GLOWMAP
 	vec4 emission = texture2D(texture1, texCoord)*2.0;
 #else
