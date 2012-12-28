@@ -81,17 +81,6 @@ void main(void)
 	vec4 sunset = vec4(0.8,min(pow(atmosDiffuse.g,0.75),1.0)+0.1,min(pow(atmosDiffuse.b,0.75),1.0),1.0);
 
 	gl_FragColor =
-<<<<<<< HEAD
-		material.emission +
-		fogFactor *
-		((scene.ambient * vertexColor) +
-		(diff * vertexColor)) +
-		(1.0-fogFactor)*(atmosDiffuse*atmosColor);
-#else // atmosphere-less planetoids and dim stars
-	gl_FragColor =
-		material.emission +
-		(scene.ambient * vertexColor) +
-=======
 		emission +
 		fogFactor * ((0.25*scene.ambient * vc) +
 		(diff * vc )) +
@@ -103,17 +92,12 @@ void main(void)
 	gl_FragColor =
 		emission +
 		(0.25*scene.ambient * vertexColor) +
->>>>>>> pioneer_a29_vem2
 		(diff * vertexColor);
 #endif //ATMOSPHERE
 
 #else // NUM_LIGHTS > 0 -- unlit rendering - stars
 	//emission is used to boost colour of stars, which is a bit odd
-<<<<<<< HEAD
-	gl_FragColor = material.emission + vertexColor;
-=======
 	gl_FragColor = emission + vertexColor;
->>>>>>> pioneer_a29_vem2
 #endif
 	SetFragDepth();
 }

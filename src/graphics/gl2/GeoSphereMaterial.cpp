@@ -46,14 +46,7 @@ Program *GeoSphereSurfaceMaterial::CreateProgram(const MaterialDescriptor &desc)
 
 void GeoSphereSurfaceMaterial::Apply()
 {
-<<<<<<< HEAD
 	SetGSUniforms();
-=======
-	//XXX replace with actual material parameter
-	glMaterialfv (GL_FRONT, GL_EMISSION, &emissive[0]);
-
-					SetGSUniforms();
->>>>>>> pioneer_a29_vem2
 }
 
 void GeoSphereSurfaceMaterial::SetGSUniforms()
