@@ -16,7 +16,7 @@
 
 using namespace Graphics;
 
-#define MAX_SFX_PER_FRAME 1024
+#define MAX_SFX_PER_FRAME 2048
 Graphics::Drawables::Sphere3D *Sfx::shieldEffect = 0;
 Graphics::Drawables::Sphere3D *Sfx::explosionEffect = 0;
 Graphics::Material *Sfx::damageParticle = 0;
@@ -91,7 +91,8 @@ void Sfx::TimeStepUpdate(const float timeStep)
 			if (m_age > 2.0) m_type = TYPE_NONE;
 			break;
 		case TYPE_SMOKE:
-			if (m_age > 2.0) m_type = TYPE_NONE;
+			if (m_age > 8.0) 
+				m_type = TYPE_NONE;
 			break;
 		case TYPE_NONE: break;
 	}
@@ -125,20 +126,22 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 		case TYPE_DAMAGE: {
 			vector3f pos(&fpos.x);
 			damageParticle->diffuse = Color(0.5f, 0.25f, 0.25f, 0.35f-(m_age/4.0f));
+			renderer->SetBlendMode(Graphics::BLEND_ALPHA);
 			renderer->DrawPointSprites(1, &pos, damageParticle, 70.f);
 			break;
 		}
 		case TYPE_SMOKE: {
 			vector3f pos(&fpos.x);	
 
-			if (m_age < 1.0)
-				smokeParticle->diffuse = Color(0.25, 0.25f, 0.3f, m_age-(m_age/2.0f));
-			else
-				smokeParticle->diffuse = Color(0.3, 0.25f, 0.25f, 1.0-(m_age));
+			if (m_age < 0.5)
+				smokeParticle->diffuse = Color(0.5, 0.5f, 0.5f, m_age-(m_age/2.0f));
+			else 
+				smokeParticle->diffuse = Color(0.5, 0.5f, 0.5f, 0.5-(m_age/16.0));
+
 
 			damageParticle->diffuse*=0.05;
-			//renderer->SetBlendMode(Graphics::BLEND_ALPHA_ONE);
-			renderer->DrawPointSprites(1, &pos, smokeParticle, (m_speed));
+			renderer->SetBlendMode(Graphics::BLEND_ALPHA);
+			renderer->DrawPointSprites(1, &pos, smokeParticle, (m_speed+m_age));
 			break;
 		}
 	}

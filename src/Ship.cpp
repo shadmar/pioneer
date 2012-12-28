@@ -279,7 +279,7 @@ bool Ship::OnDamage(Object *attacker, float kgDamage)
 			}
 		}
 
-		m_stats.hull_mass_left -= dam*0.0;
+		m_stats.hull_mass_left -= dam*0.01;
 		if (m_stats.hull_mass_left < 0) {
 			if (attacker) {
 				if (attacker->IsType(Object::BODY)) {
@@ -754,23 +754,6 @@ void Ship::TimeStepUpdate(const float timeStep)
 	AddRelTorque(GetShipType().angThrust * m_angThrusters);
 
 	DynamicBody::TimeStepUpdate(timeStep);
-
-	double speed = GetVelocity().Length();
-	Body *astro = GetFrame()->m_astroBody;
-		if (astro && astro->IsType(Object::PLANET)) {
-			Planet *p = static_cast<Planet*>(astro);
-			double pressure, density;
-			double dist = GetPosition().Length();
-			p->GetAtmosphericState(dist, &pressure, &density);
-				if ( density > 0.0 ) {
-				    matrix4x4d rot;
-				    GetRotMatrix(rot);
-					const vector3d &tstate = GetThrusterState();
-				    vector3d pos = rot * vector3d(0, 0 , 100.0*fabs(tstate.z));
-					if (fabs(tstate.z) > 0)
-					Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, std::min(speed*density*fabs(tstate.z),60.0),pos);
-				}
-		}
 	
 	// fuel use decreases mass, so do this as the last thing in the frame
 	UpdateFuel(timeStep);
@@ -1011,6 +994,32 @@ void Ship::StaticUpdate(const float timeStep)
 
 	UpdateAlertState();
 
+	const vector3d &tstate = GetThrusterState();
+	double speed = GetVelocity().Length();
+
+	/*if (m_stats.hull_mass_left < float(GetShipType().hullMass) && 0.1*Pi::rng.Double() < timeStep)
+	{
+			matrix4x4d rot;
+			GetRotMatrix(rot);
+			vector3d pos = rot * vector3d(2, 0 , 0);//100.0*fabs(tstate.z));
+			Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, 50.0,pos);
+	}*/
+
+	if (fabs(tstate.z) > 0.0 && 0.1*Pi::rng.Double() < timeStep) {
+	Body *astro = GetFrame()->m_astroBody;
+		if (astro && astro->IsType(Object::PLANET)) {
+			Planet *p = static_cast<Planet*>(astro);
+			double pressure, density;
+			double dist = GetPosition().Length();
+			p->GetAtmosphericState(dist, &pressure, &density);
+				if ( density > 0.0 ) {
+				    matrix4x4d rot;
+				    GetRotMatrix(rot);
+				    vector3d pos = rot * vector3d(0, 0 , 40);//100.0*fabs(tstate.z));
+					Sfx::AddThrustSmoke(this, Sfx::TYPE_SMOKE, std::min(10.0*speed*density*fabs(tstate.z),100.0),pos);
+				}
+		}
+	}
 	
 	/* WATER SCOOPING!!!!!!!!! */
 	if (m_flightState == LANDED) { //&& (m_equipment.Get(Equip::SLOT_PUMPS) != Equip::NONE)) { 
@@ -1231,7 +1240,7 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 	// draw shield recharge bubble
 	if (m_stats.shield_mass_left < m_stats.shield_mass) {
 		const float shield = 0.01f*GetPercentShields();
-		renderer->SetBlendMode(Graphics::BLEND_ADDITIVE);
+		renderer->SetBlendMode(Graphics::BLEND_ALPHA);
 		glPushMatrix();
 		matrix4x4f trans = matrix4x4f::Identity();
 		trans.Translate(viewCoords.x, viewCoords.y, viewCoords.z);
@@ -1240,7 +1249,7 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 
 		//fade based on strength
 		Sfx::shieldEffect->GetMaterial()->diffuse =
-			Color((1.0f-shield),shield,0.0,0.33f*(1.0f-shield));
+			Color((1.0f-shield),shield,0.0,0.33f*(0.33f-shield*0.33));
 		Sfx::shieldEffect->Draw(renderer);
 		glPopMatrix();
 		renderer->SetBlendMode(Graphics::BLEND_SOLID);
@@ -1266,6 +1275,7 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 		}
 
 		Sfx::ecmParticle->diffuse = c;
+		renderer->SetBlendMode(Graphics::BLEND_ALPHA_ONE);
 		renderer->DrawPointSprites(100, v, Sfx::ecmParticle, 50.f);
 	}
 }

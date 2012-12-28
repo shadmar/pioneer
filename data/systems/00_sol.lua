@@ -65,25 +65,223 @@ local earth = CustomSystemBody:new('Earth', 'PLANET_TERRESTRIAL')
 	:life(f(9,10))
 
 local earth_starports = {
-	CustomSystemBody:new('Shanghai', 'STARPORT_SURFACE')
-		:latitude(math.deg2rad(31))
-		:longitude(math.deg2rad(-121)),
-	CustomSystemBody:new('Mexico City', 'STARPORT_SURFACE')
-		:latitude(math.deg2rad(19))
-		:longitude(math.deg2rad(99)),
-	CustomSystemBody:new('London', 'STARPORT_SURFACE')
-		:latitude(math.deg2rad(51))
-		:longitude(0),
-	CustomSystemBody:new('Moscow', 'STARPORT_SURFACE')
-		:latitude(math.deg2rad(55))
-		:longitude(math.deg2rad(-37.5)),
+
+--	CustomSystemBody:new('Aberdeen', 'STARPORT_SURFACE') -- Stardreamer, highlander
+--     	 :latitude(math.deg2rad(57.2019))
+--	     :longitude(math.deg2rad(2.1978)),
+--	CustomSystemBody:new('Aachen', 'STARPORT_SURFACE') -- SuperG
+--     	 :latitude(math.deg2rad(50.8231))
+--	     :longitude(math.deg2rad(-6.1861)),
+--	CustomSystemBody:new('Amsterdam', 'STARPORT_SURFACE') -- -Azimech, diederick76, KingHaggis
+--     	 :latitude(math.deg2rad(52))
+--	     :longitude(math.deg2rad(-4.8)),
+--	CustomSystemBody:new('Auckland', 'STARPORT_SURFACE') -- lew82-n, Thargoid-y
+--     	 :latitude(math.deg2rad(-37.0081))
+--	     :longitude(math.deg2rad(-175)),
+	CustomSystemBody:new('Baikonur', 'STARPORT_SURFACE') -- actual spaceport
+      	 :latitude(math.deg2rad(45.9202))
+	     :longitude(math.deg2rad(-63.3424)),
+--	CustomSystemBody:new('Berlin', 'STARPORT_SURFACE') -- Simbad
+--     	 :latitude(math.deg2rad(52.560))
+--	     :longitude(math.deg2rad(-13.288)),
+--	CustomSystemBody:new('Beverley', 'STARPORT_SURFACE') -- Darkman
+--     	 :latitude(math.deg2rad(53.845))
+--	     :longitude(math.deg2rad(.427)),
 	CustomSystemBody:new('Brasilia', 'STARPORT_SURFACE')
 		:latitude(math.deg2rad(-15.5))
 		:longitude(math.deg2rad(48)),
+--	CustomSystemBody:new('Brisbane', 'STARPORT_SURFACE') -- Philbywhizz
+--     	 :latitude(math.deg2rad(-27))
+--	     :longitude(math.deg2rad(-153)),
+--	CustomSystemBody:new('Bucharest', 'STARPORT_SURFACE') -- SolCommand
+--     	 :latitude(math.deg2rad(44.5722))
+--	     :longitude(math.deg2rad(-26.1022)),
+--	CustomSystemBody:new('Buenos Aires', 'STARPORT_SURFACE') -- Gerli
+--     	 :latitude(math.deg2rad(-34.8222))
+--	     :longitude(math.deg2rad(58.5358)),
+--	CustomSystemBody:new('Budapest', 'STARPORT_SURFACE') -- Staniol, totya
+--     	 :latitude(math.deg2rad(47.4369))
+--	     :longitude(math.deg2rad(-19.2556)),
+--	CustomSystemBody:new('Concord', 'STARPORT_SURFACE') -- DarkOne
+--		 :latitude(math.deg2rad(43.2027))
+--     	 :longitude(math.deg2rad(71.5023)),   
+--	CustomSystemBody:new('Copenhagen', 'STARPORT_SURFACE') -- HawkerT
+--     	 :latitude(math.deg2rad(56))
+--	     :longitude(math.deg2rad(-13)),
+--	CustomSystemBody:new('Cotswolds', 'STARPORT_SURFACE') -- Overlord
+--     	 :latitude(math.deg2rad(52))
+--	     :longitude(math.deg2rad(1.7)),
+--	CustomSystemBody:new('Croslee', 'STARPORT_SURFACE') -- Geraldine
+--     	 :latitude(math.deg2rad(55.8667))
+--	     :longitude(math.deg2rad(4.5083)),
+--	CustomSystemBody:new('Doncaster', 'STARPORT_SURFACE') -- spike1984
+--     	 :latitude(math.deg2rad(53.4747))
+--	     :longitude(math.deg2rad(1.0044)),
+--	CustomSystemBody:new('Edinburgh', 'STARPORT_SURFACE') -- Stardog
+--     	 :latitude(math.deg2rad(55.95))
+--	     :longitude(math.deg2rad(3.3725)),
+--	CustomSystemBody:new('Edmonton', 'STARPORT_SURFACE') -- Thedestroyer
+--     	 :latitude(math.deg2rad(53.3097))
+--	     :longitude(math.deg2rad(113.5797)),
+--	CustomSystemBody:new('Eugene', 'STARPORT_SURFACE') -- Marcel
+--     	 :latitude(math.deg2rad(44.1246))
+--	     :longitude(math.deg2rad(123.2120)),
+--	CustomSystemBody:new('Gadsden', 'STARPORT_SURFACE') -- whisper979
+--		:latitude(math.deg2rad(33.9726))
+--		:longitude(math.deg2rad(86.0891)),
+--	CustomSystemBody:new('Glasgow', 'STARPORT_SURFACE') -- JamieGrant
+--     	 :latitude(math.deg2rad(55.8719))
+--	     :longitude(math.deg2rad(4.4331)),
+--	CustomSystemBody:new('Gorenje', 'STARPORT_SURFACE') -- Azimech
+--	     :latitude(math.deg2rad(46.3667))
+--     	 :longitude(math.deg2rad(-15.1167)),
+--	CustomSystemBody:new('Grays', 'STARPORT_SURFACE') -- s2odan
+--     	 :latitude(math.deg2rad(51.4724))
+--	     :longitude(math.deg2rad(-.3247)),
+--	CustomSystemBody:new('Hertford', 'STARPORT_SURFACE') -- JazHaz
+--     	 :latitude(math.deg2rad(51.795))
+--	     :longitude(math.deg2rad(.078)),
+--	CustomSystemBody:new('Honolulu', 'STARPORT_SURFACE') -- SeanN
+--     	 :latitude(math.deg2rad(21.3187))
+--	     :longitude(math.deg2rad(157.9224)),
+	CustomSystemBody:new('Jiuquan', 'STARPORT_SURFACE') -- actual spaceport
+      	 :latitude(math.deg2rad(41.2814))
+	     :longitude(math.deg2rad(-100.3067)),
+	CustomSystemBody:new('Kennedy', 'STARPORT_SURFACE') -- actual spaceport
+	     :latitude(math.deg2rad(28.6149))
+      	 :longitude(math.deg2rad(80.6944)),   
+	CustomSystemBody:new('Kourou', 'STARPORT_SURFACE') -- actual spaceport
+	     :latitude(math.deg2rad(5.236))
+      	 :longitude(math.deg2rad(52.775)),   
+--	CustomSystemBody:new('Leerdam', 'STARPORT_SURFACE') -- Azimech
+--     	 :latitude(math.deg2rad(53.2286))
+--	     :longitude(math.deg2rad(-5.7606)),
+	CustomSystemBody:new('London', 'STARPORT_SURFACE')-- Frontier
+		:latitude(math.deg2rad(51))
+		:longitude(0),
 	CustomSystemBody:new('Los Angeles', 'STARPORT_SURFACE')
 		:latitude(math.deg2rad(34))
 		:longitude(math.deg2rad(118)),
+--	CustomSystemBody:new('Lyneham', 'STARPORT_SURFACE') -- Brianetta
+--	     :latitude(math.deg2rad(51.5051))
+--     	 :longitude(math.deg2rad(1.993)),
+--	CustomSystemBody:new('Madrid', 'STARPORT_SURFACE') -- revetoty
+--     	 :latitude(math.deg2rad(40.4936))
+--	     :longitude(math.deg2rad(3.5668)),
+--	CustomSystemBody:new('Melbourne', 'STARPORT_SURFACE') -- robn
+--     	 :latitude(math.deg2rad(-37.6733))
+--	     :longitude(math.deg2rad(-144.8433)),
+	CustomSystemBody:new('Mexico City', 'STARPORT_SURFACE')
+		:latitude(math.deg2rad(19))
+		:longitude(math.deg2rad(99)),
+--	CustomSystemBody:new('Minneapolis', 'STARPORT_SURFACE') -- commodorejohn, bchimself
+--     	 :latitude(math.deg2rad(44.8820))
+--	     :longitude(math.deg2rad(93.2218)),
+--	CustomSystemBody:new('Montreal', 'STARPORT_SURFACE') -- farcodev
+--     	 :latitude(math.deg2rad(45.4706))
+--	     :longitude(math.deg2rad(73.7408)),
+	CustomSystemBody:new('Moscow', 'STARPORT_SURFACE')-- Frontier
+		:latitude(math.deg2rad(55))
+		:longitude(math.deg2rad(-37.5)),
+	CustomSystemBody:new('New York', 'STARPORT_SURFACE') -- Frontier, jasmin, Ziusudra
+	     :latitude(math.deg2rad(40.6398))
+      	 :longitude(math.deg2rad(73.7789)),   
+--	CustomSystemBody:new('Nijmegen', 'STARPORT_SURFACE') -- Braindead
+--	     :latitude(math.deg2rad(51.8304))
+--     	 :longitude(math.deg2rad(-5.8731)),   
+-- 	CustomSystemBody:new('Novo Hamburgo', 'STARPORT_SURFACE') -- AcesHigh
+--	     :latitude(math.deg2rad(-29.6961))
+--     	 :longitude(math.deg2rad(51.0817)),   
+--	CustomSystemBody:new('Orlando', 'STARPORT_SURFACE') -- Jameson
+--	     :latitude(math.deg2rad(28.4294))
+--     	 :longitude(math.deg2rad(81.3090)),   
+	CustomSystemBody:new('Paris', 'STARPORT_SURFACE') --Frontier, VampiretteDuCosmos
+	     :latitude(math.deg2rad(49.0097))
+      	 :longitude(math.deg2rad(-2.5478)),   
+--	CustomSystemBody:new('Portsmouth', 'STARPORT_SURFACE') -- auryx
+--	     :latitude(math.deg2rad(51))
+--     	 :longitude(math.deg2rad(1.05)),
+--	CustomSystemBody:new('Rome', 'STARPORT_SURFACE') -- GAlex, paelleon, Fremde, Uruboros
+--	     :latitude(math.deg2rad(41.8045))
+--     	 :longitude(math.deg2rad(-12.2508)),
+--	CustomSystemBody:new('Rosario', 'STARPORT_SURFACE') -- walterar
+--	     :latitude(math.deg2rad(-32.9306))
+--     	 :longitude(math.deg2rad(60.7850)),
+	CustomSystemBody:new('San Francisco', 'STARPORT_SURFACE') -- Frontier
+	     :latitude(math.deg2rad(37.6190))
+      	 :longitude(math.deg2rad(122.3749)),   
+--	CustomSystemBody:new('San Juan', 'STARPORT_SURFACE') -- JoseMaria
+--	     :latitude(math.deg2rad(18.39))
+--     	 :longitude(math.deg2rad(66.0667)),   
+	CustomSystemBody:new('Satish Dhawan', 'STARPORT_SURFACE') -- actual spaceport
+	     :latitude(math.deg2rad(13.7199))
+      	 :longitude(math.deg2rad(-80.2304)),   
+--	CustomSystemBody:new('Seattle', 'STARPORT_SURFACE') -- DerrickMoore
+--	     :latitude(math.deg2rad(47.4499))
+--	  	 :longitude(math.deg2rad(122.3118)),  
+	CustomSystemBody:new('Shanghai', 'STARPORT_SURFACE')
+		:latitude(math.deg2rad(31))
+		:longitude(math.deg2rad(-121)),
+--	CustomSystemBody:new('Sheffield', 'STARPORT_SURFACE') -- Subzeroplainzero
+--	     :latitude(math.deg2rad(53.3943))
+--     	 :longitude(math.deg2rad(1.3885)),   
+--	CustomSystemBody:new('St-Etienne', 'STARPORT_SURFACE') -- Vuzz
+--	     :latitude(math.deg2rad(45.4396))
+--     	 :longitude(math.deg2rad(-4.3878)),   
+--	CustomSystemBody:new('Stockholm', 'STARPORT_SURFACE') -- Friendly
+--	     :latitude(math.deg2rad(59.6519))
+--     	 :longitude(math.deg2rad(-17.9186)),   
+--	CustomSystemBody:new('Sydney', 'STARPORT_SURFACE') -- leondhay, OzFalcon
+--	     :latitude(math.deg2rad(-34))
+--     	 :longitude(math.deg2rad(-151)),   
+	CustomSystemBody:new('Tokyo', 'STARPORT_SURFACE') -- Frontier
+	     :latitude(math.deg2rad(35.7653))
+      	 :longitude(math.deg2rad(-140.3856)),   
+	CustomSystemBody:new('Uchinoura', 'STARPORT_SURFACE') -- actual spaceport
+	     :latitude(math.deg2rad(31.2523))
+      	 :longitude(math.deg2rad(-131.0785)),   
+--	CustomSystemBody:new('Versailles', 'STARPORT_SURFACE') -- NevilClavain
+--	     :latitude(math.deg2rad(48.7742))
+--     	 :longitude(math.deg2rad(-2.1917)),   
+--	CustomSystemBody:new('Vienna', 'STARPORT_SURFACE') -- Grimm
+--	     :latitude(math.deg2rad(48.1103))
+--     	 :longitude(math.deg2rad(-16.5697)),   
+--	CustomSystemBody:new('Voronezh', 'STARPORT_SURFACE') -- Loki999
+--	     :latitude(math.deg2rad(51.8142))
+--     	 :longitude(math.deg2rad(-39.2296)),   
+--	CustomSystemBody:new('Wakefield', 'STARPORT_SURFACE') -- GUNSMIF
+--	     :latitude(math.deg2rad(53.6801))
+--     	 :longitude(math.deg2rad(1.4920)),   
+--	CustomSystemBody:new('Wattwil', 'STARPORT_SURFACE') -- potsmoke66
+--	     :latitude(math.deg2rad(47.3))
+--     	 :longitude(math.deg2rad(-9.08333))   
+-- 		 :seed(25),
+--	CustomSystemBody:new('Warsaw', 'STARPORT_SURFACE') -- OSH
+--	     :latitude(math.deg2rad(52.1658))
+--     	 :longitude(math.deg2rad(-20.9671)),   
+--	CustomSystemBody:new('Welshpool', 'STARPORT_SURFACE') -- Skodyn
+--     	 :latitude(math.deg2rad(52.6597))
+--	     :longitude(math.deg2rad(3.1472)),
+	CustomSystemBody:new('Woomera', 'STARPORT_SURFACE') -- actual spaceport
+	     :latitude(math.deg2rad(-30.95))
+      	 :longitude(math.deg2rad(-136.4595)),   
+--	CustomSystemBody:new('Wroclaw', 'STARPORT_SURFACE') -- Mysibrat
+--	     :latitude(math.deg2rad(51.1027))
+--     	 :longitude(math.deg2rad(-16.8858)),   
+--	CustomSystemBody:new('York', 'STARPORT_SURFACE') -- Subzeroplainzero, Darkman
+--	     :latitude(math.deg2rad(53.9586))
+--     	 :longitude(math.deg2rad(1.05)),   
+--	CustomSystemBody:new('Zagreb', 'STARPORT_SURFACE') -- Latinus
+--	     :latitude(math.deg2rad(45.7429))
+--     	 :longitude(math.deg2rad(-16.0688)),   
+	
 	CustomSystemBody:new('Gates Spaceport', 'STARPORT_ORBITAL')
+		:semi_major_axis(f(100,100000))
+		:rotation_period(f(1,24*60*3)),
+	CustomSystemBody:new('Jobs Pad', 'STARPORT_ORBITAL')
+		:semi_major_axis(f(100,100000))
+		:rotation_period(f(1,24*60*3)),
+	CustomSystemBody:new('Torvalds Platform', 'STARPORT_ORBITAL')
 		:semi_major_axis(f(100,100000))
 		:rotation_period(f(1,24*60*3)),
 }
