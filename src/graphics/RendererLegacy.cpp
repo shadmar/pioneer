@@ -451,7 +451,7 @@ bool RendererLegacy::DrawPointSprites(int count, const vector3f *positions, Mate
 {
 	if (count < 1 || !material || !material->texture0) return false;
 
-	SetBlendMode(BLEND_ALPHA_ONE);
+	//SetBlendMode(BLEND_ALPHA);
 	SetDepthWrite(false);
 	VertexArray va(ATTRIB_POSITION | ATTRIB_UV0, count * 6);
 
@@ -655,6 +655,7 @@ Material *RendererLegacy::CreateMaterial(const MaterialDescriptor &desc)
 		m = new StarfieldMaterialLegacy();
 		break;
 	case EFFECT_GEOSPHERE_TERRAIN:
+	case EFFECT_GEOSPHERE_TERRAIN_WITH_LAVA:
 		m = new GeoSphereSurfaceMaterialLegacy();
 		break;
 	default:

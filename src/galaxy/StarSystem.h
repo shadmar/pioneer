@@ -178,6 +178,7 @@ public:
 
 
 	bool IsScoopable() const;
+	bool IsHydroScoopable() const;
 
 	Uint32 id; // index into starsystem->m_bodies
 	SystemPath path;

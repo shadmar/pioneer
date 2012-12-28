@@ -859,11 +859,17 @@ void SpaceStation::CalcLighting(Planet *planet, double &ambient, double &intensi
 
 	// ambient light fraction
 	// alter ratio between directly and ambiently lit portions towards ambiently lit as sun sets
-	double fraction = (0.4+0.4*(
+	double fraction = (0.1+0.6*(
 						1.0-light_clamped*(Clamp((opticalThicknessFraction),0.0,1.0))
+<<<<<<< HEAD
 						)*0.8+0.2); //fraction goes from 0.6 to 1.0
 
 
+=======
+						)*0.8+0.1); //fraction goes from 0.6 to 1.0
+					  
+	
+>>>>>>> pioneer_a29_vem2
 	// fraction of light left over to be lit directly
 	intensity = (1.0-fraction)*intensity;
 

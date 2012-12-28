@@ -14,6 +14,7 @@ uniform Scene scene;
 varying vec3 varyingEyepos;
 varying vec3 varyingNormal;
 varying vec4 vertexColor;
+varying vec4 varyingemission;
 
 void main(void)
 {
@@ -21,38 +22,66 @@ void main(void)
 	vec3 eyenorm = normalize(eyepos);
 	vec3 tnorm = normalize(varyingNormal);
 	vec4 diff = vec4(0.0);
+	vec4 rdiff = vec4(0.0);
+	vec4 emission = gl_FrontMaterial.emission+varyingemission;
+	vec4 vc=vertexColor;
+
 
 #if (NUM_LIGHTS > 0)
+
+	float specularReflection=0.0;
+	float attenuation;
+
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 		float nDotVP = max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))));
-		diff += gl_LightSource[i].diffuse * nDotVP;
+		float nnDotVP = max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position))));
+		diff += gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+
+		//Specular reflection
+		vec3 L = normalize(gl_LightSource[i].position.xyz - eyepos); 
+		vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
+		vec3 R = normalize(-reflect(L,tnorm)); 
+		//water only
+	    	if (vertexColor.b > 0.05 && vertexColor.r < 0.05) {
+			specularReflection += pow(max(dot(R,E),0.0),16.0)*0.25*(1.0/float(NUM_LIGHTS));
+		}
 	}
+	
 
 #ifdef ATMOSPHERE
 	// when does the eye ray intersect atmosphere
 	float atmosStart = findSphereEyeRayEntryDistance(geosphereCenter, eyepos, geosphereScaledRadius * geosphereAtmosTopRad);
+	float ldprod;
 
 	float fogFactor;
 	{
 		float atmosDist = geosphereScale * (length(eyepos) - atmosStart);
-		float ldprod;
 		// a&b scaled so length of 1.0 means planet surface.
 		vec3 a = (atmosStart * eyenorm - geosphereCenter) / geosphereScaledRadius;
 		vec3 b = (eyepos - geosphereCenter) / geosphereScaledRadius;
 		ldprod = AtmosLengthDensityProduct(a, b, atmosColor.w*geosphereAtmosFogDensity, atmosDist, geosphereAtmosInvScaleHeight);
-		fogFactor = 1.0 / exp(ldprod);
+		fogFactor = clamp( 1.5 / exp(ldprod),0.0,1.0);  
 	}
 
 	vec4 atmosDiffuse = vec4(0.0);
+	vec4 ssDiffuse = vec4(0.0);
 	{
 		vec3 surfaceNorm = normalize(atmosStart*eyenorm - geosphereCenter);
 		for (int i=0; i<NUM_LIGHTS; ++i) {
-			atmosDiffuse += gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+
+			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
+			atmosDiffuse += 0.4*gl_LightSource[i].diffuse * (nDotVP+0.5*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+			//ssDiffuse += gl_LightSource[i].diffuse * nDotVP;
 		}
 	}
 	atmosDiffuse.a = 1.0;
 
+	//calculate sunset light.
+	vec4 sunset = vec4(0.8,min(pow(atmosDiffuse.g,0.75),1.0)+0.1,min(pow(atmosDiffuse.b,0.75),1.0),1.0);
+
 	gl_FragColor =
+<<<<<<< HEAD
 		material.emission +
 		fogFactor *
 		((scene.ambient * vertexColor) +
@@ -62,12 +91,29 @@ void main(void)
 	gl_FragColor =
 		material.emission +
 		(scene.ambient * vertexColor) +
+=======
+		emission +
+		fogFactor * ((0.25*scene.ambient * vc) +
+		(diff * vc )) +
+		(1.0-fogFactor)*(atmosDiffuse*atmosColor)
+			+(0.03-clamp(fogFactor,0.0,0.02))*atmosDiffuse*ldprod*sunset 	    //increase scatter on lower atmpsphere				
+			+(pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)*sunset  	
+				+diff*specularReflection*sunset;
+#else // atmosphere-less planetoids and dim stars
+	gl_FragColor =
+		emission +
+		(0.25*scene.ambient * vertexColor) +
+>>>>>>> pioneer_a29_vem2
 		(diff * vertexColor);
 #endif //ATMOSPHERE
 
 #else // NUM_LIGHTS > 0 -- unlit rendering - stars
 	//emission is used to boost colour of stars, which is a bit odd
+<<<<<<< HEAD
 	gl_FragColor = material.emission + vertexColor;
+=======
+	gl_FragColor = emission + vertexColor;
+>>>>>>> pioneer_a29_vem2
 #endif
 	SetFragDepth();
 }

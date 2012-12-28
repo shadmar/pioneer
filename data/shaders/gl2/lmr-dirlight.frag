@@ -24,15 +24,17 @@ void main(void)
 		spec += gl_LightSource[i].specular * pf;
 	}
 
+//vec4 sunset = vec4(1.0,min(pow(ssDiffuse.g,0.5),1.0)+0.25,min(pow(ssDiffuse.b,0.5),1.0)+0.25,1.0);
+
 #ifdef GLOWMAP
-	vec4 emission = texture2D(texture1, texCoord);
+	vec4 emission = texture2D(texture1, texCoord)*2.0;
 #else
 	vec4 emission = gl_FrontMaterial.emission;
 #endif
 
 	gl_FragColor =
-		(scene.ambient * gl_FrontMaterial.ambient) +
-		(amb * gl_FrontMaterial.ambient) +
+		(0.25*scene.ambient * gl_FrontMaterial.ambient) +
+		(0.25*amb * gl_FrontMaterial.ambient) +
 		(diff * gl_FrontMaterial.diffuse) +
 		(spec * gl_FrontMaterial.specular) +
 		emission;

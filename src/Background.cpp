@@ -71,7 +71,7 @@ void Starfield::Fill(unsigned long seed)
 
 	//fill the array
 	for (int i=0; i<BG_STAR_MAX; i++) {
-		float col = float(rand.Double(0.2,0.7));
+		float col = float(rand.Double(0.1,1.0));
 
 		// this is proper random distribution on a sphere's surface
 		const float theta = float(rand.Double(0.0, 2.0*M_PI));
@@ -81,7 +81,7 @@ void Starfield::Fill(unsigned long seed)
 				1000.0f * sqrt(1.0f - u*u) * cos(theta),
 				1000.0f * u,
 				1000.0f * sqrt(1.0f - u*u) * sin(theta)
-			), Color(col, col, col,	1.f)
+			), Color(col-float(rand.Double(0.0, 0.4)), col-float(rand.Double(0.0, 0.3)), col, 1.f)  //Shad
 		);
 	}
 }

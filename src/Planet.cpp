@@ -98,7 +98,8 @@ void Planet::GetAtmosphericState(double dist, double *outPressure, double *outDe
 	const double adiabaticLimit = surfaceTemperature_T0/lapseRate_L; //should be stored
 
 	// This model has no atmosphere beyond the adiabetic limit
-	if (height_h >= adiabaticLimit) {*outDensity = 0.0; *outPressure = 0.0; return;}
+	if (height_h >= adiabaticLimit*4.0) {*outDensity = 0.0; *outPressure = 0.0; return;}
+	if (height_h >= adiabaticLimit) { *outDensity = 0.1/height_h; *outPressure = 0.0; return;}
 
 	//P = density*R*T=(n/V)*R*T
 	const double surfaceP_p0 = PA_2_ATMOS*((surfaceDensity)*GAS_CONSTANT*surfaceTemperature_T0); // in atmospheres

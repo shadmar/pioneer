@@ -33,18 +33,27 @@ void GeoSphereProgram::InitUniforms()
 
 Program *GeoSphereSurfaceMaterial::CreateProgram(const MaterialDescriptor &desc)
 {
-	assert(desc.effect == EFFECT_GEOSPHERE_TERRAIN);
+	assert((desc.effect == EFFECT_GEOSPHERE_TERRAIN) || (desc.effect == EFFECT_GEOSPHERE_TERRAIN_WITH_LAVA));
 	assert(desc.dirLights < 5);
 	std::stringstream ss;
 	ss << stringf("#define NUM_LIGHTS %0{u}\n", desc.dirLights);
 	if (desc.atmosphere)
 		ss << "#define ATMOSPHERE\n";
+	if (desc.effect == EFFECT_GEOSPHERE_TERRAIN_WITH_LAVA)
+		ss << "#define TERRAIN_WITH_LAVA\n";
 	return new Graphics::GL2::GeoSphereProgram("geosphere_terrain", ss.str());
 }
 
 void GeoSphereSurfaceMaterial::Apply()
 {
+<<<<<<< HEAD
 	SetGSUniforms();
+=======
+	//XXX replace with actual material parameter
+	glMaterialfv (GL_FRONT, GL_EMISSION, &emissive[0]);
+
+					SetGSUniforms();
+>>>>>>> pioneer_a29_vem2
 }
 
 void GeoSphereSurfaceMaterial::SetGSUniforms()
