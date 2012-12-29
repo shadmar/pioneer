@@ -88,7 +88,7 @@ void Sfx::TimeStepUpdate(const float timeStep)
 			if (m_age > 0.5) m_type = TYPE_NONE;
 			break;
 		case TYPE_DAMAGE:
-			if (m_age > 2.0) m_type = TYPE_NONE;
+			if (m_age > 8.0) m_type = TYPE_NONE;
 			break;
 		case TYPE_SMOKE:
 			if (m_age > 8.0) 
@@ -125,18 +125,18 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 		}
 		case TYPE_DAMAGE: {
 			vector3f pos(&fpos.x);
-			damageParticle->diffuse = Color(0.5f, 0.25f, 0.25f, 0.35f-(m_age/4.0f));
+			damageParticle->diffuse = Color(0.2f, 0.2f, 0.2f, 0.35f-(m_age/32.0f));
 			renderer->SetBlendMode(Graphics::BLEND_ALPHA);
-			renderer->DrawPointSprites(1, &pos, damageParticle, 70.f);
+			renderer->DrawPointSprites(1, &pos, damageParticle, 170.f);
 			break;
 		}
 		case TYPE_SMOKE: {
 			vector3f pos(&fpos.x);	
-
+			float var = Pi::rng.Double()*0.1f;
 			if (m_age < 0.5)
-				smokeParticle->diffuse = Color(0.5, 0.5f, 0.5f, m_age-(m_age/2.0f));
+				smokeParticle->diffuse = Color(0.25f-var, 0.25f-var, 0.25f-var, m_age-(m_age/2.0f));
 			else 
-				smokeParticle->diffuse = Color(0.5, 0.5f, 0.5f, 0.5-(m_age/16.0));
+				smokeParticle->diffuse = Color(0.25-var, 0.25f-var, 0.25f-var, 0.5-(m_age/16.0));
 
 
 			damageParticle->diffuse*=0.05;
