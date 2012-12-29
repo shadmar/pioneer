@@ -125,18 +125,18 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 		}
 		case TYPE_DAMAGE: {
 			vector3f pos(&fpos.x);
-			damageParticle->diffuse = Color(0.2f, 0.2f, 0.2f, 0.35f-(m_age/32.0f));
+			damageParticle->diffuse = Color(0.3f, 0.3f, 0.3f, 0.75f-(m_age/12.0f));
 			renderer->SetBlendMode(Graphics::BLEND_ALPHA);
-			renderer->DrawPointSprites(1, &pos, damageParticle, 170.f);
+			renderer->DrawPointSprites(1, &pos, damageParticle, 270.f);
 			break;
 		}
 		case TYPE_SMOKE: {
 			vector3f pos(&fpos.x);	
-			float var = Pi::rng.Double()*0.1f;
+			float var = Pi::rng.Double()*0.05f;
 			if (m_age < 0.5)
-				smokeParticle->diffuse = Color(0.25f-var, 0.25f-var, 0.25f-var, m_age-(m_age/2.0f));
+				smokeParticle->diffuse = Color(0.75f-var, 0.75f-var, 0.75f-var, m_age-(m_age/2.0f));
 			else 
-				smokeParticle->diffuse = Color(0.25-var, 0.25f-var, 0.25f-var, 0.5-(m_age/16.0));
+				smokeParticle->diffuse = Color(0.75-var, 0.75f-var, 0.75f-var, 0.5-(m_age/16.0));
 
 
 			damageParticle->diffuse*=0.05;
@@ -169,7 +169,8 @@ void Sfx::Add(const Body *b, TYPE t)
 	sfx->m_type = t;
 	sfx->m_age = 0;
 	sfx->SetPosition(b->GetPosition());
-	sfx->m_vel = b->GetVelocity() + 200.0*vector3d(
+	//sfx->m_vel = b->GetVelocity() + 200.0*vector3d(
+	sfx->m_vel = 200.0*vector3d(
 			Pi::rng.Double()-0.5,
 			Pi::rng.Double()-0.5,
 			Pi::rng.Double()-0.5);

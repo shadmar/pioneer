@@ -35,7 +35,8 @@ void main(void)
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 		float nDotVP = max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))));
 		float nnDotVP = max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position))));
-		diff += gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+		//diff += gl_LightSource[i].diffuse * (nDotVP+0.1*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
+		diff += 0.5*(nDotVP+0.5*clamp(1.0-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS)));
 
 		//Specular reflection
 		vec3 L = normalize(gl_LightSource[i].position.xyz - eyepos); 
@@ -43,7 +44,7 @@ void main(void)
 		vec3 R = normalize(-reflect(L,tnorm)); 
 		//water only
 	    	if (vertexColor.b > 0.05 && vertexColor.r < 0.05) {
-			specularReflection += pow(max(dot(R,E),0.0),16.0)*0.25*(1.0/float(NUM_LIGHTS));
+			specularReflection += pow(max(dot(R,E),0.0),16.0)*0.4*(1.0/float(NUM_LIGHTS));
 		}
 	}
 	
@@ -71,8 +72,7 @@ void main(void)
 
 			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
 			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
-			atmosDiffuse += 0.4*gl_LightSource[i].diffuse * (nDotVP+0.5*clamp(gl_LightSource[i].diffuse-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS))	);
-			//ssDiffuse += gl_LightSource[i].diffuse * nDotVP;
+			atmosDiffuse +=   0.5*(nDotVP+0.5*clamp(1.0-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS)));
 		}
 	}
 	atmosDiffuse.a = 1.0;
@@ -85,7 +85,7 @@ void main(void)
 		fogFactor * ((0.25*scene.ambient * vc) +
 		(diff * vc )) +
 		(1.0-fogFactor)*(atmosDiffuse*atmosColor)
-			+(0.03-clamp(fogFactor,0.0,0.02))*atmosDiffuse*ldprod*sunset 	    //increase scatter on lower atmpsphere				
+			+(0.02-clamp(fogFactor,0.0,0.01))*atmosDiffuse*ldprod*sunset 	    //increase scatter on lower atmpsphere				
 			+(pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)*sunset  	
 				+diff*specularReflection*sunset;
 #else // atmosphere-less planetoids and dim stars
