@@ -61,10 +61,10 @@ void GeoSphereSurfaceMaterial::SetGSUniforms()
 	p->atmosColor.Set(ap.atmosCol);
 	p->geosphereAtmosFogDensity.Set(ap.atmosDensity);
 	p->geosphereAtmosInvScaleHeight.Set(ap.atmosInvScaleHeight);
-	p->geosphereAtmosTopRad.Set(ap.atmosRadius);
+	p->geosphereAtmosTopRad.Set(ap.atmosRadius); //1.13
 	p->geosphereCenter.Set(ap.center);
 	p->geosphereScaledRadius.Set(ap.planetRadius / ap.scale);
-	p->geosphereScale.Set(ap.scale);
+	p->geosphereScale.Set(ap.scale); //1
 }
 
 Program *GeoSphereSkyMaterial::CreateProgram(const MaterialDescriptor &desc)

@@ -70,9 +70,9 @@ void main(void)
 		vec3 surfaceNorm = normalize(atmosStart*eyenorm - geosphereCenter);
 		for (int i=0; i<NUM_LIGHTS; ++i) {
 
-			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
-			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
-			atmosDiffuse +=   0.5*(nDotVP+0.5*clamp(1.0-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS)));
+			float nDotVP = max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))));
+			float nnDotVP = max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));
+			atmosDiffuse +=   gl_LightSource[i].diffuse * 0.5*(nDotVP+0.5*clamp(1.0-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS)));
 		}
 	}
 	atmosDiffuse.a = 1.0;

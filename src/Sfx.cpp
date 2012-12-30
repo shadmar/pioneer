@@ -132,11 +132,12 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 		}
 		case TYPE_SMOKE: {
 			vector3f pos(&fpos.x);	
+
 			float var = Pi::rng.Double()*0.05f;
 			if (m_age < 0.5)
-				smokeParticle->diffuse = Color(0.75f-var, 0.75f-var, 0.75f-var, m_age-(m_age/2.0f));
+				smokeParticle->diffuse = Color(0.75f-var, 0.75f-var, 0.75f-var, m_age*0.5-(m_age/2.0f));
 			else 
-				smokeParticle->diffuse = Color(0.75-var, 0.75f-var, 0.75f-var, 0.5-(m_age/16.0));
+				smokeParticle->diffuse = Color(0.75-var, 0.75f-var, 0.75f-var, 0.5*0.5-(m_age/16.0));
 
 
 			damageParticle->diffuse*=0.05;

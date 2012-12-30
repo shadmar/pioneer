@@ -57,17 +57,17 @@ void main(void)
 			vec3 E = normalize(-eyepos); // we are in Eye Coordinates, so EyePos is (0,0,0)
 			vec3 R = normalize(-reflect(L,varyingNormal)); 
 		
-			vec4 nDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))))	;
-			vec4 nnDotVP = gl_LightSource[i].diffuse * max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));  //add light beyond dot product. 
+			float nDotVP =  max(0.0, dot(surfaceNorm, normalize(vec3(gl_LightSource[i].position))))	;
+			float nnDotVP = max(0.0, dot(surfaceNorm, normalize(-vec3(gl_LightSource[i].position))));  //add light beyond dot product. 
 
-			atmosDiffuse +=   0.5*(nDotVP+0.5*clamp(1.0-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS)));
+			atmosDiffuse +=   gl_LightSource[i].diffuse * 0.5*(nDotVP+0.5*clamp(1.0-nnDotVP*4.0,0.0,1.0)*(1.0/float(NUM_LIGHTS)));
 			specularReflection += pow(max(dot(R,E),0.0),64.0)*(1.0/float(NUM_LIGHTS));
 		}
 	}
 	atmosDiffuse.a = 1.0;
 
 	//calculate sunset
-	vec4 sunset = vec4(1.0+clamp(0.5-1.0*atmosDiffuse.r,0.0,1.0),clamp(pow(atmosDiffuse.g,0.85),0.0,1.0)+0.1,clamp(pow(atmosDiffuse.b,0.85),0.0,1.0),1.0);
+	vec4 sunset = vec4(1.0+clamp(0.5-1.0*atmosDiffuse.r,0.0,1.0),clamp(pow(atmosDiffuse.g,0.85),0.0,1.0),clamp(pow(atmosDiffuse.b,0.85),0.0,1.0),1.0);
 
 	gl_FragColor = (1.0-fogFactor) * (atmosDiffuse*vec4(atmosColor.rgb, 1.0))	//atmosphere plain.
 			+(0.02-clamp(fogFactor,0.0,0.01))*atmosDiffuse*ldprod*sunset    //increase light on lower atmosphere.

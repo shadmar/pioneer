@@ -64,7 +64,7 @@ TerrainHeightFractal<TerrainHeightRuggedDesert>::TerrainHeightFractal(const Syst
 
 	height = m_maxHeightInMeters*0.3;
 	SetFracDef(3, height, m_rand.Double(20.0,240.0)*height);
-	SetFracDef(4, m_maxHeightInMeters, m_rand.Double(1.0, 2.0)*m_maxHeightInMeters);
+			SetFracDef(4, m_maxHeightInMeters, m_rand.Double(1.0, 2.0)*m_maxHeightInMeters);
 	// dunes
 	height = m_maxHeightInMeters*0.2;
 	SetFracDef(5, height*0.1, m_rand.Double(5,75)*height, 10000.0*m_fracmult);
