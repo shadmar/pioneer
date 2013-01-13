@@ -1175,8 +1175,8 @@ void SystemBody::PickAtmosphere()
 	 */
 	switch (type) {
 		case SystemBody::TYPE_PLANET_GAS_GIANT:
-			m_atmosColor = Color(1.0f, 1.0f, 1.0f, 0.0005f);
-			m_atmosDensity = 14.0;
+			m_atmosColor = Color(0.2f, 0.2f, 0.2f, 0.1005f);
+			m_atmosDensity = 24.0;
 			break;
 		case SystemBody::TYPE_PLANET_ASTEROID:
 			m_atmosColor = Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1360,17 +1360,19 @@ SystemBody::AtmosphereParameters SystemBody::CalcAtmosphereParams() const
 	params.planetRadius = static_cast<float>(radiusPlanet_in_m);
 
 	//get camera dynamicDensity
-	Camera *cam = Pi::worldView->GetActiveCamera();
-	Body *astro = cam->GetFrame()->GetParent()->GetBody();
-	double pressure, density;
-	if (astro && astro->IsType(Object::PLANET)) {
-		Planet *pl = static_cast<Planet*>(astro);
-		const vector3f relpos(pl->GetInterpPositionRelTo(cam->GetFrame()));
-		double altitude(relpos.Length());
-		pl->GetAtmosphericState(altitude, &pressure, &density);
-		params.dynamicDensity = float(density);
+	params.dynamicDensity = 0.f;
+	if (Pi::GetView() == Pi::worldView) {   //check this so the objectviewer doesn't crash
+		Camera *cam = Pi::worldView->GetActiveCamera();
+		Body *astro = cam->GetFrame()->GetParent()->GetBody();
+			if (cam && astro && astro->IsType(Object::PLANET)) {
+				Planet *pl = static_cast<Planet*>(astro); 
+				vector3f relpos(pl->GetInterpPositionRelTo(cam->GetFrame()));
+				double altitude(relpos.Length());
+				double pressure, density;
+				pl->GetAtmosphericState(altitude, &pressure, &density);
+				params.dynamicDensity = float(density); 
+			}
 	}
-	else params.dynamicDensity = 0.f;
 		
 	return params;
 }

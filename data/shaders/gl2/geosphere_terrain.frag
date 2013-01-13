@@ -20,6 +20,7 @@ varying vec4 vertexColor;
 varying vec4 varyingEmission;
 #endif
 
+
 void main(void)
 {
 	vec3 eyepos = varyingEyepos;
@@ -28,10 +29,12 @@ void main(void)
 	vec4 diff = vec4(0.0);
 	float decaynormals,nDotVP,nnDotVP=0.0;
 	float planetsurfaceDensity=geosphereAtmosFogDensity*10000.0;	
-	float decay = max(1.0,sqrt(currentDensity)/2.5);  //density above darkens fast
+	float decay = 1.0-clamp((currentDensity/planetsurfaceDensity)*(planetsurfaceDensity/75.0),0.0,1.0);  //density above darkens fast
+
+			    //  3    +   8   - 8 /  8
 
 	//Dense planet ?
-	if (planetsurfaceDensity > 1.0) decaynormals = clamp(currentDensity/planetsurfaceDensity,0.0,1.0);
+	if (planetsurfaceDensity > 1.0) decaynormals = 1.0-decay; //clamp(currentDensity/planetsurfaceDensity,0.0,1.0);
 	else decaynormals = 1.0;
 
 	#ifdef TERRAIN_WITH_WATER
@@ -96,13 +99,13 @@ void main(void)
 		  #ifdef TERRAIN_WITH_WATER
 		  diff*specularReflection*sunset +
 		  #endif
-		  ((0.02-clamp(fogFactor,0.0,0.01))*diff*ldprod*sunset/max(1.0,pow(planetsurfaceDensity,4.0)))/decay +	      //increase fog scatter				
-		  ((pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)*sunset/max(1.0,pow(planetsurfaceDensity,4.0)))/decay;  //distant fog.
+		  ((0.02-clamp(fogFactor,0.0,0.01))*diff*ldprod*sunset/max(1.0,pow(planetsurfaceDensity,4.0)))*decay +	      //increase fog scatter				
+		  ((pow((1.0-pow(fogFactor,0.75)),256.0)*0.4*diff*atmosColor)*sunset/max(1.0,pow(planetsurfaceDensity,4.0)))*decay;  //distant fog.
 
 	//decay light in thick atmosphere and tone red
-	gl_FragColor = vec4((clamp(gl_FragColor.r,0.0,1.0)/decay)+0.25*(1.0-1.0/decay),
-			    (clamp(gl_FragColor.g,0.0,1.0)/decay)+0.10*(1.0-1.0/decay),
-                            (clamp(gl_FragColor.b,0.0,1.0)/decay)-0.99*(1.0-1.0/decay)		,
+	gl_FragColor = vec4((clamp(gl_FragColor.r,0.0,1.0)*decay)+0.25*(1.0-decay),
+			    (clamp(gl_FragColor.g,0.0,1.0)*decay)+0.10*(1.0-decay),
+                            (clamp(gl_FragColor.b,0.0,1.0)*decay)-0.99*(1.0-decay),
                             gl_FragColor.a);
 
 	#else // atmosphere-less planetoids and dim stars
