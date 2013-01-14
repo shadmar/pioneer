@@ -29,14 +29,13 @@ void main(void)
 	vec4 diff = vec4(0.0);
 	float decaynormals,nDotVP,nnDotVP=0.0;
 	float planetsurfaceDensity=geosphereAtmosFogDensity*10000.0;	
-	float decay = 1.0-clamp((currentDensity/planetsurfaceDensity)*(planetsurfaceDensity/75.0),0.0,1.0);  //density above darkens fast
+	float decay = 1.0-clamp((currentDensity/planetsurfaceDensity)*(planetsurfaceDensity/75.0),0.0,1.0);  //decay get less the more density it gets it's 1 at zero density at almost 0 at 75 density
 
-			    //  3    +   8   - 8 /  8
 
-	//Dense planet ?
-	if (planetsurfaceDensity > 1.0) decaynormals = 1.0-decay; //clamp(currentDensity/planetsurfaceDensity,0.0,1.0);
-	else decaynormals = 1.0;
-
+	//Dense planet, lets decay the normals too
+	if (planetsurfaceDensity>1.0) decaynormals = clamp(currentDensity/planetsurfaceDensity,0.0,1.0);
+	else decaynormals=1.0;
+		
 	#ifdef TERRAIN_WITH_WATER
 	float specularReflection=0.0;
 	#endif
@@ -80,7 +79,7 @@ void main(void)
 		vec3 a = (atmosStart * eyenorm - geosphereCenter) / geosphereScaledRadius;
 		vec3 b = (eyepos - geosphereCenter) / geosphereScaledRadius;
 		ldprod = AtmosLengthDensityProduct(a, b, atmosColor.w*geosphereAtmosFogDensity, atmosDist, geosphereAtmosInvScaleHeight);
-		fogFactor = clamp( 1.5 / exp(ldprod),0.0,1.0); 
+		fogFactor = clamp( 1.5 / exp(ldprod),0.0,1.0);
 	}
 
 	//calculate sunset tone red when passing through more atmosphere, clamp everything.
