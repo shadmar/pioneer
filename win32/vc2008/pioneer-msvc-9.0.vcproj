@@ -2211,7 +2211,15 @@
 				>
 			</File>
 			<File
+<<<<<<< HEAD
 				RelativePath="..\..\src\LmrModel.cpp"
+=======
+				RelativePath="..\..\src\terrain\TerrainColorMars.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\terrain\TerrainColorMethane.cpp"
+>>>>>>> Ae-2222/marsheightmap
 				>
 			</File>
 			<File
@@ -2327,7 +2335,15 @@
 				>
 			</File>
 			<File
+<<<<<<< HEAD
 				RelativePath="..\..\src\LuaEvent.cpp"
+=======
+				RelativePath="..\..\src\terrain\TerrainHeightMapped3.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\terrain\TerrainHeightMountainsCraters.cpp"
+>>>>>>> Ae-2222/marsheightmap
 				>
 			</File>
 			<File
