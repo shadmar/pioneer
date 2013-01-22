@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\..\src\terrain\TerrainColorGGSaturn2.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorGGUranus.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorIce.cpp" />
+    <ClCompile Include="..\..\..\src\terrain\TerrainColorMars.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorMethane.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorRock.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorRock2.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="..\..\..\src\terrain\TerrainHeightHillsRivers.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainHeightMapped.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainHeightMapped2.cpp" />
+    <ClCompile Include="..\..\..\src\terrain\TerrainHeightMapped3.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainHeightMountainsCraters.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainHeightMountainsCraters2.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainHeightMountainsNormal.cpp" />
