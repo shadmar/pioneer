@@ -5,6 +5,7 @@
 #include "Ship.h"
 #include "Pi.h"
 #include "Game.h"
+#include "scenegraph/Model.h"
 
 using namespace UI;
 
@@ -14,18 +15,12 @@ ShipSpinner::ShipSpinner(Context *context, const ShipFlavour &flavour) : Widget(
 	m_flavour(flavour),
 	m_rotX(0), m_rotY(0)
 {
-	m_model = Pi::FindModel(ShipType::types[m_flavour.id].lmrModelName.c_str());
+	m_model = Pi::FindModel(ShipType::types[m_flavour.id].modelName.c_str());
 
-	memset(&m_params, 0, sizeof(LmrObjParams));
-	m_params.animationNamespace = "ShipAnimation";
-	m_params.equipment = &m_equipment;
-	m_flavour.ApplyTo(&m_params);
-	m_params.animValues[Ship::ANIM_WHEEL_STATE] = 1.0;
-	m_params.flightState = Ship::FLYING;
+	m_flavour.ApplyTo(m_model);
 
-	Color lc(0.5f, 0.5f, 0.5f, 0.f);
+	Color lc(1.f);
 	m_light.SetDiffuse(lc);
-	m_light.SetAmbient(lc);
 	m_light.SetSpecular(lc);
 	m_light.SetPosition(vector3f(1.f, 1.f, 0.f));
 	m_light.SetType(Graphics::Light::LIGHT_DIRECTIONAL);
@@ -41,8 +36,6 @@ void ShipSpinner::Layout()
 
 void ShipSpinner::Update()
 {
-	m_params.time = double(SDL_GetTicks()) * 0.001;
-
 	if (!(m_rightMouseButton && IsMouseActive())) {
 		m_rotX += .5*Pi::GetFrameTime();
 		m_rotY += Pi::GetFrameTime();
@@ -72,7 +65,7 @@ void ShipSpinner::Draw()
 	matrix4x4f rot = matrix4x4f::RotateXMatrix(m_rotX);
 	rot.RotateY(m_rotY);
 	rot[14] = -1.5f * m_model->GetDrawClipRadius();
-	m_model->Render(r, rot, &m_params);
+	m_model->Render(rot);
 }
 
 void ShipSpinner::HandleMouseDown(const MouseButtonEvent &event)

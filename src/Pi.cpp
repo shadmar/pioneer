@@ -16,7 +16,6 @@
 #include "GeoSphere.h"
 #include "Intro.h"
 #include "Lang.h"
-#include "LmrModel.h"
 #include "LuaBody.h"
 #include "LuaCargoBody.h"
 #include "LuaChatForm.h"
@@ -33,6 +32,7 @@
 #include "LuaGame.h"
 #include "LuaLang.h"
 #include "LuaManager.h"
+#include "LuaMissile.h"
 #include "LuaMusic.h"
 #include "LuaNameGen.h"
 #include "LuaPlanet.h"
@@ -74,6 +74,7 @@
 #include "Tombstone.h"
 #include "UIView.h"
 #include "WorldView.h"
+#include "EnumStrings.h"
 #include "galaxy/CustomSystem.h"
 #include "galaxy/Galaxy.h"
 #include "galaxy/StarSystem.h"
@@ -135,40 +136,16 @@ bool Pi::mouseYInvert;
 std::vector<Pi::JoystickState> Pi::joysticks;
 bool Pi::navTunnelDisplayed;
 Gui::Fixed *Pi::menu;
-const char * const Pi::combatRating[] = {
-	Lang::HARMLESS,
-	Lang::MOSTLY_HARMLESS,
-	Lang::POOR,
-	Lang::AVERAGE,
-	Lang::ABOVE_AVERAGE,
-	Lang::COMPETENT,
-	Lang::DANGEROUS,
-	Lang::DEADLY,
-	Lang::ELITE
-};
 Graphics::Renderer *Pi::renderer;
 RefCountedPtr<UI::Context> Pi::ui;
 ModelCache *Pi::modelCache;
+Intro *Pi::intro;
 
 #if WITH_OBJECTVIEWER
 ObjectViewerView *Pi::objectViewerView;
 #endif
 
 Sound::MusicPlayer Pi::musicPlayer;
-
-int Pi::CombatRating(int kills)
-{
-	if (kills < 8) return 0;
-	if (kills < 16) return 1;
-	if (kills < 32) return 2;
-	if (kills < 64) return 3;
-	if (kills < 128) return 4;
-	if (kills < 512) return 5;
-	if (kills < 2400) return 6;
-	if (kills < 6000) return 7;
-	/* nothing better to do with their lives? */
-	return 8;
-}
 
 static void draw_progress(float progress)
 {
@@ -191,6 +168,7 @@ static void LuaInit()
 	LuaPlanet::RegisterClass();
 	LuaStar::RegisterClass();
 	LuaPlayer::RegisterClass();
+	LuaMissile::RegisterClass();
 	LuaCargoBody::RegisterClass();
 	LuaStarSystem::RegisterClass();
 	LuaSystemPath::RegisterClass();
@@ -246,17 +224,17 @@ static void LuaInitGame() {
 	LuaEvent::Clear();
 }
 
-ModelBase *Pi::FindModel(const std::string &name)
+SceneGraph::Model *Pi::FindModel(const std::string &name)
 {
-	// Try LMR models first, then NewModel
-	ModelBase *m = 0;
+	SceneGraph::Model *m = 0;
 	try {
-		m = LmrLookupModelByName(name.c_str());
-	} catch (LmrModelNotFoundException) {
+		m = Pi::modelCache->FindModel(name);
+	} catch (ModelCache::ModelNotFoundException) {
+		printf("Could not find model: %s\n", name.c_str());
 		try {
-			m = Pi::modelCache->FindModel(name);
+			m = Pi::modelCache->FindModel("error");
 		} catch (ModelCache::ModelNotFoundException) {
-			Error("Could not find model %s", name.c_str());
+			Error("Could not find placeholder model");
 		}
 	}
 
@@ -360,6 +338,8 @@ void Pi::Init()
 
 	navTunnelDisplayed = (config->Int("DisplayNavTunnel")) ? true : false;
 
+	EnumStrings::Init();
+
 	// XXX UI requires Lua  but Pi::ui must exist before we start loading
 	// templates. so now we have crap everywhere :/
 	Lua::Init();
@@ -383,7 +363,6 @@ void Pi::Init()
 	CustomSystem::Init();
 	draw_progress(0.4f);
 
-	LmrModelCompilerInit(Pi::renderer);
 	modelCache = new ModelCache(Pi::renderer);
 	draw_progress(0.5f);
 
@@ -565,6 +544,7 @@ void Pi::ToggleLuaConsole()
 void Pi::Quit()
 {
 	Projectile::FreeModel();
+	delete Pi::intro;
 	delete Pi::gameMenuView;
 	delete Pi::luaConsole;
 	Sfx::Uninit();
@@ -572,14 +552,16 @@ void Pi::Quit()
 	SpaceStation::Uninit();
 	CityOnPlanet::Uninit();
 	GeoSphere::Uninit();
-	LmrModelCompilerUninit();
 	Galaxy::Uninit();
+	Faction::Uninit();
+	CustomSystem::Uninit();
 	Graphics::Uninit();
 	Pi::ui.Reset(0);
 	LuaUninit();
 	Gui::Uninit();
 	delete Pi::modelCache;
 	delete Pi::renderer;
+	delete Pi::config;
 	StarSystem::ShrinkCache();
 	SDL_Quit();
 	FileSystem::Uninit();
@@ -677,12 +659,13 @@ void Pi::HandleEvents()
 								/* add test object */
 								if (KeyState(SDLK_RSHIFT)) {
 									Missile *missile =
-										new Missile(ShipType::MISSILE_GUIDED, Pi::player, Pi::player->GetCombatTarget());
+										new Missile(ShipType::MISSILE_GUIDED, Pi::player);
 									missile->SetOrient(Pi::player->GetOrient());
 									missile->SetFrame(Pi::player->GetFrame());
 									missile->SetPosition(Pi::player->GetPosition()+50.0*dir);
 									missile->SetVelocity(Pi::player->GetVelocity());
 									game->GetSpace()->AddBody(missile);
+									missile->AIKamikaze(Pi::player->GetCombatTarget());
 								} else if (KeyState(SDLK_LSHIFT)) {
 									SpaceStation *s = static_cast<SpaceStation*>(Pi::player->GetNavTarget());
 									if (s) {
@@ -878,7 +861,7 @@ void Pi::StartGame()
 
 void Pi::Start()
 {
-	Intro *intro = new Intro(Pi::renderer, Graphics::GetScreenWidth(), Graphics::GetScreenHeight());
+	Pi::intro = new Intro(Pi::renderer, Graphics::GetScreenWidth(), Graphics::GetScreenHeight());
 
 	ui->SetInnerWidget(ui->CallTemplate("MainMenu"));
 
@@ -925,6 +908,8 @@ void Pi::Start()
 	ui->RemoveInnerWidget();
 	ui->Layout(); // UI does important things on layout, like updating keyboard shortcuts
 
+	delete Pi::intro; Pi::intro = 0;
+
 	InitGame();
 	StartGame();
 	MainLoop();
@@ -943,8 +928,6 @@ void Pi::EndGame()
 
 	if (!config->Int("DisableSound")) AmbientSounds::Uninit();
 	Sound::DestroyAllEvents();
-
-
 
 	assert(game);
 	delete game;
@@ -1086,8 +1069,6 @@ void Pi::MainLoop()
 			int lua_memKB = int(lua_mem >> 10) % 1024;
 			int lua_memMB = int(lua_mem >> 20);
 
-			Pi::statSceneTris += LmrModelGetStatsTris();
-
 			snprintf(
 				fps_readout, sizeof(fps_readout),
 				"%d fps (%.1f ms/f), %d phys updates, %d triangles, %.3f M tris/sec, %d terrain vtx/sec, %d glyphs/sec\n"
@@ -1104,7 +1085,6 @@ void Pi::MainLoop()
 			else last_stats += 1000;
 		}
 		Pi::statSceneTris = 0;
-		LmrModelClearStatsTris();
 #endif
 
 #ifdef MAKING_VIDEO
@@ -1119,8 +1099,8 @@ void Pi::MainLoop()
 
 float Pi::CalcHyperspaceRangeMax(int hyperclass, int total_mass_in_tonnes)
 {
-	// 400.0f is balancing parameter
-	return 400.0f * hyperclass * hyperclass / (total_mass_in_tonnes);
+	// 625.0f is balancing parameter
+	return 625.0f * hyperclass * hyperclass / (total_mass_in_tonnes);
 }
 
 float Pi::CalcHyperspaceRange(int hyperclass, float total_mass_in_tonnes, int fuel)
@@ -1148,8 +1128,8 @@ float Pi::CalcHyperspaceDuration(int hyperclass, int total_mass_in_tonnes, float
 {
 	float hyperspace_range_max = CalcHyperspaceRangeMax(hyperclass, total_mass_in_tonnes);
 
-	// 0.45 is balancing parameter
-	return ((dist * dist * 0.45) / (hyperspace_range_max * hyperclass)) *
+	// 0.36 is balancing parameter
+	return ((dist * dist * 0.36) / (hyperspace_range_max * hyperclass)) *
 			(60.0 * 60.0 * 24.0 * sqrtf(total_mass_in_tonnes));
 }
 

@@ -21,6 +21,7 @@ class HyperspaceCloud;
 class AICommand;
 class ShipController;
 class CargoBody;
+class Missile;
 namespace Graphics { class Renderer; }
 
 struct shipstats_t {
@@ -36,7 +37,7 @@ struct shipstats_t {
 	float shield_mass_left;
 	float fuel_tank_mass; //thruster, not hyperspace fuel
 	float fuel_tank_mass_left;
-	float fuel_use;
+	float fuel_use; // percentage (ie, 0--100) of tank used per second at full thrust
 };
 
 class SerializableEquipSet: public EquipSet {
@@ -158,7 +159,7 @@ public:
 	// 0 to 1.0 is alive, > 1.0 = death
 	double GetHullTemperature() const;
 	void UseECM();
-	virtual bool FireMissile(int idx, Ship *target);
+	virtual Missile * SpawnMissile(ShipType::Id missile_type, int power=-1);
 
 	enum AlertState { // <enum scope='Ship' name=ShipAlertStatus prefix=ALERT_>
 		ALERT_NONE,
@@ -226,15 +227,15 @@ public:
 	};
 	FuelState GetFuelState() { return m_thrusterFuel > 0.05f ? FUEL_OK : m_thrusterFuel > 0.0f ? FUEL_WARNING : FUEL_EMPTY; }
 
-	//fuel left, 0.0-1.0
+	// fuel left, 0.0-1.0
 	double GetFuel() const { return m_thrusterFuel;	}
 	void SetFuel(const double f) { m_thrusterFuel = Clamp(f, 0.0, 1.0); }
 	double GetFuelReserve() const { return m_reserveFuel; }
 	void SetFuelReserve(const double f) { m_reserveFuel = Clamp(f, 0.0, 1.0); }
 
-	double GetFuelUseRate(double effectiveExhaustVelocity);
-	double GetEffectiveExhaustVelocity();
-	double GetSpeedReachedWithFuel();
+	// percentage (ie, 0--100) of tank used per second at full thrust
+	double GetFuelUseRate() const;
+	double GetSpeedReachedWithFuel() const;
 
 	void EnterSystem();
 

@@ -169,6 +169,10 @@ bool RendererLegacy::SetViewport(int x, int y, int width, int height)
 
 bool RendererLegacy::SetTransform(const matrix4x4d &m)
 {
+	//XXX this is not pretty but there's no standard way of converting between them.
+	for (int i=0; i<16; ++i) {
+		m_currentTransform[i] = m[i];
+	}
 	//XXX you might still need the occasional push/pop
 	//GL2+ or ES2 renderers can forego the classic matrix stuff entirely and use uniforms
 	glMatrixMode(GL_MODELVIEW);
@@ -179,6 +183,7 @@ bool RendererLegacy::SetTransform(const matrix4x4d &m)
 bool RendererLegacy::SetTransform(const matrix4x4f &m)
 {
 	//same as above
+	m_currentTransform = m;
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(&m[0]);
 	return true;
@@ -276,7 +281,6 @@ bool RendererLegacy::SetLights(int numlights, const Light *lights)
 		};
 		glLightfv(GL_LIGHT0+i, GL_POSITION, pos);
 		glLightfv(GL_LIGHT0+i, GL_DIFFUSE, l.GetDiffuse());
-		glLightfv(GL_LIGHT0+i, GL_AMBIENT, l.GetAmbient());
 		glLightfv(GL_LIGHT0+i, GL_SPECULAR, l.GetSpecular());
 		glEnable(GL_LIGHT0+i);
 
@@ -286,9 +290,6 @@ bool RendererLegacy::SetLights(int numlights, const Light *lights)
 		assert(m_numDirLights < 5);
 	}
 	//XXX should probably disable unused lights (for legacy renderer only)
-
-	Graphics::State::SetLights(numlights, lights);
-
 	return true;
 }
 
@@ -395,25 +396,6 @@ bool RendererLegacy::DrawPoints(int count, const vector3f *points, const Color *
 	return true;
 }
 
-bool RendererLegacy::DrawPoints2D(int count, const vector2f *points, const Color *colors, float size)
-{
-	if (count < 1 || !points || !colors) return false;
-
-	glDisable(GL_LIGHTING);
-
-	glPointSize(size);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, points);
-	glColorPointer(4, GL_FLOAT, 0, colors);
-	glDrawArrays(GL_POINTS, 0, count);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glPointSize(1.f); // XXX wont't be necessary
-
-	return true;
-}
-
 bool RendererLegacy::DrawTriangles(const VertexArray *v, Material *m, PrimitiveType t)
 {
 	if (!v || v->position.size() < 3) return false;
@@ -454,8 +436,7 @@ bool RendererLegacy::DrawPointSprites(int count, const vector3f *positions, Mate
 	SetDepthWrite(false);
 	VertexArray va(ATTRIB_POSITION | ATTRIB_UV0, count * 6);
 
-	matrix4x4f rot;
-	glGetFloatv(GL_MODELVIEW_MATRIX, &rot[0]);
+	matrix4x4f rot(GetCurrentTransform());
 	rot.ClearToRotOnly();
 	rot = rot.InverseOf();
 

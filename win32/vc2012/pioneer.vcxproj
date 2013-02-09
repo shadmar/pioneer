@@ -130,6 +130,7 @@
     <ClCompile Include="..\..\src\Background.cpp" />
     <ClCompile Include="..\..\src\Body.cpp" />
     <ClCompile Include="..\..\src\Camera.cpp" />
+    <ClCompile Include="..\..\src\CameraController.cpp" />
     <ClCompile Include="..\..\src\CargoBody.cpp" />
     <ClCompile Include="..\..\src\ChatForm.cpp" />
     <ClCompile Include="..\..\src\CityOnPlanet.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="..\..\src\DeadVideoLink.cpp" />
     <ClCompile Include="..\..\src\DeathView.cpp" />
     <ClCompile Include="..\..\src\DynamicBody.cpp" />
+    <ClCompile Include="..\..\src\EnumStrings.cpp" />
     <ClCompile Include="..\..\src\enum_table.cpp" />
     <ClCompile Include="..\..\src\EquipType.cpp" />
     <ClCompile Include="..\..\src\FaceVideoLink.cpp" />
@@ -159,7 +161,6 @@
     <ClCompile Include="..\..\src\Intro.cpp" />
     <ClCompile Include="..\..\src\KeyBindings.cpp" />
     <ClCompile Include="..\..\src\Lang.cpp" />
-    <ClCompile Include="..\..\src\LmrModel.cpp" />
     <ClCompile Include="..\..\src\Lua.cpp" />
     <ClCompile Include="..\..\src\LuaBody.cpp" />
     <ClCompile Include="..\..\src\LuaCargoBody.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="..\..\src\LuaLang.cpp" />
     <ClCompile Include="..\..\src\LuaManager.cpp" />
     <ClCompile Include="..\..\src\LuaMatrix.cpp" />
+    <ClCompile Include="..\..\src\LuaMissile.cpp" />
     <ClCompile Include="..\..\src\LuaMusic.cpp" />
     <ClCompile Include="..\..\src\LuaNameGen.cpp" />
     <ClCompile Include="..\..\src\LuaObject.cpp" />
@@ -242,6 +244,7 @@
     <ClCompile Include="..\..\src\SoundMusic.cpp" />
     <ClCompile Include="..\..\src\Space.cpp" />
     <ClCompile Include="..\..\src\SpaceStation.cpp" />
+    <ClCompile Include="..\..\src\SpaceStationType.cpp" />
     <ClCompile Include="..\..\src\SpaceStationView.cpp" />
     <ClCompile Include="..\..\src\Star.cpp" />
     <ClCompile Include="..\..\src\StationAdvertForm.cpp" />
@@ -271,7 +274,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\win32\WinMath.cpp" />
     <ClCompile Include="..\..\src\WorldView.cpp" />
-    <ClCompile Include="..\..\src\WorldViewCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Aabb.h" />
@@ -284,6 +286,7 @@
     <ClInclude Include="..\..\src\buildopts.h" />
     <ClInclude Include="..\..\src\ByteRange.h" />
     <ClInclude Include="..\..\src\Camera.h" />
+    <ClInclude Include="..\..\src\CameraController.h" />
     <ClInclude Include="..\..\src\CargoBody.h" />
     <ClInclude Include="..\..\src\ChatForm.h" />
     <ClInclude Include="..\..\src\CityOnPlanet.h" />
@@ -294,6 +297,7 @@
     <ClInclude Include="..\..\src\DeathView.h" />
     <ClInclude Include="..\..\src\DeleteEmitter.h" />
     <ClInclude Include="..\..\src\DynamicBody.h" />
+    <ClInclude Include="..\..\src\EnumStrings.h" />
     <ClInclude Include="..\..\src\enum_table.h" />
     <ClInclude Include="..\..\src\EquipType.h" />
     <ClInclude Include="..\..\src\FaceVideoLink.h" />
@@ -316,7 +320,6 @@
     <ClInclude Include="..\..\src\Intro.h" />
     <ClInclude Include="..\..\src\KeyBindings.h" />
     <ClInclude Include="..\..\src\libs.h" />
-    <ClInclude Include="..\..\src\LmrModel.h" />
     <ClInclude Include="..\..\src\Lua.h" />
     <ClInclude Include="..\..\src\LuaBody.h" />
     <ClInclude Include="..\..\src\LuaCargoBody.h" />
@@ -336,6 +339,7 @@
     <ClInclude Include="..\..\src\LuaLang.h" />
     <ClInclude Include="..\..\src\LuaManager.h" />
     <ClInclude Include="..\..\src\LuaMatrix.h" />
+    <ClInclude Include="..\..\src\LuaMissile.h" />
     <ClInclude Include="..\..\src\LuaMusic.h" />
     <ClInclude Include="..\..\src\LuaNameGen.h" />
     <ClInclude Include="..\..\src\LuaObject.h" />
@@ -397,6 +401,7 @@
     <ClInclude Include="..\..\src\SoundMusic.h" />
     <ClInclude Include="..\..\src\Space.h" />
     <ClInclude Include="..\..\src\SpaceStation.h" />
+    <ClInclude Include="..\..\src\SpaceStationType.h" />
     <ClInclude Include="..\..\src\SpaceStationView.h" />
     <ClInclude Include="..\..\src\Star.h" />
     <ClInclude Include="..\..\src\StationAdvertForm.h" />
@@ -425,7 +430,6 @@
     <ClInclude Include="..\..\src\win32\TextUtils.h" />
     <ClInclude Include="..\..\src\win32\WinMath.h" />
     <ClInclude Include="..\..\src\WorldView.h" />
-    <ClInclude Include="..\..\src\WorldViewCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\Makefile.am" />

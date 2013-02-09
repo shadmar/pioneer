@@ -22,10 +22,8 @@ public:
 	Player() { }; //default constructor used before Load
 	virtual void SetDockedWith(SpaceStation *, int port);
 	virtual bool OnDamage(Object *attacker, float kgDamage);
-	virtual void OnHaveKilled(Body *guyWeKilled);
-	int GetKillCount() const { return m_knownKillCount; }
 	virtual bool SetWheelState(bool down); // returns success of state change, NOT state itself
-	virtual bool FireMissile(int idx, Ship *target);
+	virtual Missile * SpawnMissile(ShipType::Id missile_type, int power=-1);
 	virtual void SetAlertState(Ship::AlertState as);
 	virtual void NotifyRemoved(const Body* const removedBody);
 
@@ -57,10 +55,6 @@ protected:
 	/* MarketAgent stuff */
 	void Bought(Equip::Type t);
 	void Sold(Equip::Type t);
-
-private:
-	int m_killCount;
-	int m_knownKillCount; // updated on docking
 };
 
 #endif /* _PLAYER_H */

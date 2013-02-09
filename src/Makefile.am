@@ -13,7 +13,7 @@ AM_CFLAGS += $(WARN_CFLAGS)
 AM_CPPFLAGS += $(WARN_CPPFLAGS)
 AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
-bin_PROGRAMS = pioneer lmrmodelviewer
+bin_PROGRAMS = pioneer
 noinst_HEADERS = \
 	Aabb.h \
 	AmbientSounds.h \
@@ -21,9 +21,9 @@ noinst_HEADERS = \
 	Background.h \
 	BezierCurve.h \
 	Body.h \
-	BufferObject.h \
 	ByteRange.h \
 	Camera.h \
+	CameraController.h \
 	CargoBody.h \
 	ChatForm.h \
 	CityOnPlanet.h \
@@ -35,6 +35,7 @@ noinst_HEADERS = \
 	DeathView.h \
 	DeleteEmitter.h \
 	DynamicBody.h \
+	EnumStrings.h \
 	EquipSet.h \
 	EquipType.h \
 	FaceVideoLink.h \
@@ -56,7 +57,6 @@ noinst_HEADERS = \
 	KeyBindings.h \
 	Lang.h \
 	LangStrings.inc.h \
-	LmrModel.h \
 	Lua.h \
 	LuaBody.h \
 	LuaCargoBody.h \
@@ -77,6 +77,7 @@ noinst_HEADERS = \
 	LuaVector.h \
 	LuaFixed.h \
 	LuaManager.h \
+	LuaMissile.h \
 	LuaMusic.h \
 	LuaNameGen.h \
 	LuaObject.h \
@@ -100,7 +101,6 @@ noinst_HEADERS = \
 	MarketAgent.h \
 	MathUtil.h \
 	Missile.h \
-	ModelBase.h \
 	ModelBody.h \
 	ModelCache.h \
 	ModManager.h \
@@ -146,6 +146,7 @@ noinst_HEADERS = \
 	SoundMusic.h \
 	Space.h \
 	SpaceStation.h \
+	SpaceStationType.h \
 	SpaceStationView.h \
 	Star.h \
 	SystemInfoView.h \
@@ -156,7 +157,6 @@ noinst_HEADERS = \
 	VideoLink.h \
 	View.h \
 	WorldView.h \
-	WorldViewCamera.h \
 	SmartPtr.h \
 	buildopts.h \
 	fixed.h \
@@ -175,6 +175,7 @@ pioneer_SOURCES	= \
 	Background.cpp \
 	Body.cpp \
 	Camera.cpp \
+	CameraController.cpp \
 	CargoBody.cpp \
 	Color.cpp \
 	ChatForm.cpp \
@@ -184,6 +185,7 @@ pioneer_SOURCES	= \
 	DeadVideoLink.cpp \
 	DeathView.cpp \
 	DynamicBody.cpp \
+	EnumStrings.cpp \
 	EquipType.cpp \
 	FaceVideoLink.cpp \
 	Factions.cpp \
@@ -203,7 +205,6 @@ pioneer_SOURCES	= \
 	GameConfig.cpp \
 	KeyBindings.cpp \
 	Lang.cpp \
-	LmrModel.cpp \
 	Lua.cpp \
 	LuaBody.cpp \
 	LuaCargoBody.cpp \
@@ -224,6 +225,7 @@ pioneer_SOURCES	= \
 	LuaVector.cpp \
 	LuaFixed.cpp \
 	LuaManager.cpp \
+	LuaMissile.cpp \
 	LuaMusic.cpp \
 	LuaNameGen.cpp \
 	LuaObject.cpp \
@@ -284,6 +286,7 @@ pioneer_SOURCES	= \
 	SoundMusic.cpp \
 	Space.cpp \
 	SpaceStation.cpp \
+	SpaceStationType.cpp \
 	SpaceStationView.cpp \
 	Star.cpp \
 	SystemInfoView.cpp \
@@ -293,7 +296,6 @@ pioneer_SOURCES	= \
 	UIView.cpp \
 	View.cpp \
 	WorldView.cpp \
-	WorldViewCamera.cpp \
 	main.cpp \
 	mtrand.cpp \
 	perlin.cpp \
@@ -324,50 +326,6 @@ endif
 
 if !HAVE_LUA
 pioneer_LDADD += ../contrib/lua/liblua.a
-endif
-
-lmrmodelviewer_SOURCES = \
-	Color.cpp \
-	CRC32.cpp \
-	FileSourceZip.cpp \
-	FileSystem.cpp \
-	FontCache.cpp \
-	IniConfig.cpp \
-	Lang.cpp \
-	LuaMatrix.cpp \
-	LuaVector.cpp \
-	LuaFixed.cpp \
-	LmrModel.cpp \
-	LuaModelViewer.cpp \
-	LuaRef.cpp \
-	LuaUtils.cpp \
-	LuaConstants.cpp \
-	ModManager.cpp \
-	PngWriter.cpp \
-	EquipType.cpp \
-	ShipType.cpp \
-	SDLWrappers.cpp \
-	StringF.cpp \
-	perlin.cpp \
-	utils.cpp \
-	enum_table.cpp
-lmrmodelviewer_LDADD = \
-	../contrib/miniz/libminiz.a \
-	../contrib/jenkins/libjenkins.a \
-	collider/libcollider.a \
-	text/libtext.a \
-	gui/libgui.a \
-	graphics/libgraphics.a \
-	terrain/libterrain.a \
-	ui/libui.a \
-		    $(FREETYPE_LIBS) $(GLEW_LIBS) $(GLU_LIBS) $(GL_LIBS) \
-		    $(SDL_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(PNG_LIBS)
-if !HAVE_LUA
-lmrmodelviewer_LDADD += ../contrib/lua/liblua.a
-endif
-
-if BUILD_WIN32
-lmrmodelviewer_LDFLAGS = -Wl,-Map=lmrmodelviewer.map
 endif
 
 check_PROGRAMS = tests uitest textstress
@@ -404,6 +362,7 @@ uitest_SOURCES = \
 	LuaConstants.cpp \
 	LuaRef.cpp \
 	PngWriter.cpp \
+	EnumStrings.cpp \
 	enum_table.cpp \
 	utils.cpp
 uitest_LDADD = \
@@ -454,12 +413,10 @@ endif
 
 if BUILD_WIN32
     pioneer_LDADD += win32/libwin32.a $(MINGW_LIBS)
-    lmrmodelviewer_LDADD += win32/libwin32.a $(MINGW_LIBS)
 endif
 
 if BUILD_POSIX
     pioneer_LDADD += posix/libposix.a
-    lmrmodelviewer_LDADD += posix/libposix.a
 endif
 
 if HAVE_WINDRES
