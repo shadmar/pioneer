@@ -132,20 +132,22 @@ void Sfx::Render(Renderer *renderer, const matrix4x4d &ftransform)
 			break;
 
 		case TYPE_SMOKE: 
-			
-			float var = Pi::rng.Double()*0.05f;
+			float var = Pi::rng.Double()*0.05f; //slightly variation to trail color
 			if (m_age < 0.5)
+				//start trail
 				smokeParticle->diffuse = Color(0.75f-var, 0.75f-var, 0.75f-var, m_age*0.5-(m_age/2.0f));
 			else 
+				//end trail
 				smokeParticle->diffuse = Color(0.75-var, 0.75f-var, 0.75f-var, 0.5*0.5-(m_age/16.0));
 
+			//face camera
 			glPushMatrix();
 			matrix4x4f trans = trans.Identity();
 			trans.Translate(fpos.x, fpos.y, fpos.z);
 			renderer->SetTransform(trans);
 
 			damageParticle->diffuse*=0.05;
-			renderer->SetBlendMode(Graphics::BLEND_ALPHA_ONE);
+			renderer->SetBlendMode(Graphics::BLEND_ALPHA);
 			renderer->DrawPointSprites(1, &pos, smokeParticle, (m_speed*m_age));
 			glPopMatrix();
 			break;
